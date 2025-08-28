@@ -6,4 +6,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\Backgrounds\" />
+      <Folder Include="Models\Classes\" />
+      <Folder Include="Models\Feats\" />
+      <Folder Include="Models\Races\" />
+      <Folder Include="Models\Spells\" />
+    </ItemGroup>
+
 </Project>
