@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "api\api.csproj", "{1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "infrastructure", "infrastructure\infrastructure.csproj", "{6FFF3AC8-D5FA-4DCB-9F9C-5ED4D9112401}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "service", "service\service.csproj", "{5ACCFA25-6C1F-4E5E-9C43-F51739811257}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{6FFF3AC8-D5FA-4DCB-9F9C-5ED4D9112401}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FFF3AC8-D5FA-4DCB-9F9C-5ED4D9112401}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FFF3AC8-D5FA-4DCB-9F9C-5ED4D9112401}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ACCFA25-6C1F-4E5E-9C43-F51739811257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACCFA25-6C1F-4E5E-9C43-F51739811257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACCFA25-6C1F-4E5E-9C43-F51739811257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACCFA25-6C1F-4E5E-9C43-F51739811257}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
