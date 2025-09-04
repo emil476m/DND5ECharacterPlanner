@@ -1,3 +1,5 @@
+using infrastructure.Models.Miscellaneous.Enums;
+
 namespace infrastructure.Models;
 
 public abstract class DndEntity
@@ -12,9 +14,3 @@ public abstract class DndEntity
     
 }
 
-public enum RuleSet
-{
-    DND5E_2014,
-    DND5E_2024,
-    Homebrew
-}
