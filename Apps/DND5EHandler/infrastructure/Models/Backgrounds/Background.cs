@@ -33,8 +33,3 @@ public class Background : DndEntity
     public List<Choice<AbilityScoreIncrease>> AbilityScoreIncreaseChoices { get; set; } = new();
 }
 
-public class BackgroundFeature
-{
-    public string Name { get; set; }
-    public string Effect { get; set; }
-}

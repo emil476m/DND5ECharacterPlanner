@@ -12,6 +12,7 @@ public class RacialAbility
 
     // Ability Score bonuses (e.g., +2 DEX, +1 WIS)
     public List<AbilityScoreIncrease> AbilityScoreIncreases { get; set; } = new();
+    public List<Choice<AbilityScoreIncrease>> AbilityScoreIncreaseChoices { get; set; } = new();
 
     // Proficiencies granted (skills, weapons, armor, tools)
     public List<Proficiency> Proficiencies { get; set; } = new();
