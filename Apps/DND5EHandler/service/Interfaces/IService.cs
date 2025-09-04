@@ -1,13 +1,13 @@
 namespace service.Interfaces;
 
-public interface IService<T> where T : class
+public interface IService<TModel, TDto>
 {
-    Task<T> GetResult(Guid id);
+    Task<TModel> GetResult(Guid id);
     
     Task<bool> Delete(Guid id);
     
-    Task<T> Create(T item);
+    Task<TModel> Create(TDto item);
     
-    Task<T> Update(Guid id, T item);
+    Task<TModel> Update(Guid id, TDto item);
     
 }
