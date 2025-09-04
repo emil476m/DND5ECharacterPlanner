@@ -18,11 +18,11 @@ services:
     networks:
       - dnd5e_network
       
-  characterhandler:
+  dnd5ehandler:
     #restart: always
     build:
       context: .
-      dockerfile: Apps/CharacterHandler/Dockerfile
+      dockerfile: Apps/DND5EHandler/Dockerfile
     ports:
       - 7000:8000
     environment:
