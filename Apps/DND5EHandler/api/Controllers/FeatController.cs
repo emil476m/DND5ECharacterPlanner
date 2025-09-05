@@ -27,4 +27,37 @@ public class FeatController : ControllerBase
         return result != null ? Ok(result) : NotFound();
     }
     
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
+
+        bool result = await _featService.Delete(id);
+        
+        return result != null ? Ok(result) : NotFound();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
+        
+        FeatModel result = await _featService.GetResult(id);
+        
+        return result != null ? Ok(result) : NotFound();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Update(FeatCreateModelDto item, Guid id)
+    {
+        if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
+        
+        FeatModel result = await _featService.Update(id, item);
+        
+        return result != null ? Ok(result) : NotFound();
+    }
+    
+    
+    
+    
 }
