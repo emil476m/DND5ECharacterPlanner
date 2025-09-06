@@ -15,11 +15,6 @@ public class FeatService : IService<FeatModel , FeatCreateModelDto>
     {
         _featRepository = featRepository;
     }
-    
-    public Task<FeatModel> GetResult(Guid id)
-    {
-        return _featRepository.GetResult(id);
-    }
 
     public Task<bool> Delete(Guid id)
     {
