@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS dnd_entity (
     created_by_user_id UUID NULL,
     created_at DATE NOT NULL,
     used_ruleset VARCHAR(255) NOT NULL,
-    entity_type VARCHAR(255) NOT NULL,
+    entity_type INTEGER NOT NULL,
     PRIMARY KEY (id)
 );
 

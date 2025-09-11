@@ -1,3 +1,4 @@
+using infrastructure.Models;
 using infrastructure.Models.Feats;
 using Microsoft.AspNetCore.Mvc;
 using service.Implementation;
@@ -62,7 +63,7 @@ public class FeatController : ControllerBase
     [Route("Feat/SimpleList")]
     public async Task<IActionResult> GetSimpleFeatList()
     {
-        FeatModel result = null;
+        IEnumerable<SimpelEntityDto> result = await _featService.GetSimpleList();
         
         return result != null ? Ok(result) : NotFound();
     }
@@ -71,7 +72,7 @@ public class FeatController : ControllerBase
     [Route("Feat/DetailedList")]
     public async Task<IActionResult> GetDetailedFeatList()
     {
-        FeatModel result = null;
+        IEnumerable<FeatModel> result = await _featService.GetDetailedList();
         
         return result != null ? Ok(result) : NotFound();
     }

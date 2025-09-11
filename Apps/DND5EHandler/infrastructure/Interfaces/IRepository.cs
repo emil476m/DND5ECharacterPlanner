@@ -1,8 +1,14 @@
+using infrastructure.Models;
+
 namespace infrastructure.Interfaces;
 
 public interface IRepository<T> where T : class
 {
     Task<T> GetResult(Guid id);
+    
+    Task<IEnumerable<SimpelEntityDto>> GetSimpleList();
+    
+    Task<IEnumerable<T>> GetDetailedList();
     
     Task<bool> Delete(Guid id);
     

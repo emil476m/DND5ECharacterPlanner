@@ -1,8 +1,10 @@
 using Dapper;
 using infrastructure.Interfaces;
 using infrastructure.Mappers;
+using infrastructure.Models;
 using infrastructure.Models.Feats;
 using infrastructure.Models.Miscellaneous;
+using infrastructure.Models.Miscellaneous.Enums;
 using Npgsql;
 
 namespace infrastructure.Implementations;
@@ -123,7 +125,7 @@ public class FeatRepository : IRepository<FeatModel>
         _dataSource = dataSource;
     }
     
-    
+
     /// <summary>
     /// Method that deletes a feat
     /// </summary>
@@ -240,4 +242,30 @@ public class FeatRepository : IRepository<FeatModel>
         return entity.ToFeatModel();
     }
 
+    /// <summary>
+    /// gets a simple list of all the feats, simple meaning with minimal data
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IEnumerable<SimpelEntityDto>> GetSimpleList()
+    {
+        try
+        {
+            using var conn = await _dataSource.OpenConnectionAsync();
+
+            var sql = @$"SELECT id AS {nameof(SimpelEntityDto.Id)}, name AS {nameof(SimpelEntityDto.Name)}, is_public AS {nameof(SimpelEntityDto.IsPublic)}, 
+                     used_ruleset AS {nameof(SimpelEntityDto.UsedRuleset)}
+                     FROM dnd_entity WHERE entity_type = @EntityType;";
+
+            return await conn.QueryAsync<SimpelEntityDto>(sql, new { EntityType = EntityType.Feat });
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Could not get simple feat list", ex);
+        }
+    }
+    
+    public Task<IEnumerable<FeatModel>> GetDetailedList()
+    {
+        throw new NotImplementedException();
+    }
 }

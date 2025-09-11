@@ -1,4 +1,5 @@
 using infrastructure.Interfaces;
+using infrastructure.Models;
 using infrastructure.Models.Feats;
 using infrastructure.Models.Miscellaneous;
 using infrastructure.Models.Miscellaneous.Enums;
@@ -19,6 +20,16 @@ public class FeatService : IService<FeatModel , FeatCreateModelDto>
     public Task<FeatModel> GetResult(Guid id)
     {
         return _featRepository.GetResult(id);
+    }
+
+    public Task<IEnumerable<SimpelEntityDto>> GetSimpleList()
+    {
+        return _featRepository.GetSimpleList();
+    }
+
+    public Task<IEnumerable<FeatModel>> GetDetailedList()
+    {
+        return _featRepository.GetDetailedList();
     }
 
     public Task<bool> Delete(Guid id)
