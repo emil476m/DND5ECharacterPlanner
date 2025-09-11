@@ -264,8 +264,115 @@ public class FeatRepository : IRepository<FeatModel>
         }
     }
     
-    public Task<IEnumerable<FeatModel>> GetDetailedList()
+    /// <summary>
+    /// Gets all feats with all their data
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IEnumerable<FeatModel>> GetDetailedList()
+{
+    using var conn = await _dataSource.OpenConnectionAsync();
+
+    // Load feats
+    var feats = await LoadBaseFeats(conn);
+    if (!feats.Any()) return Enumerable.Empty<FeatModel>();
+
+    // Load ability score increases
+    await LoadAbilityScoreIncreases(conn, feats);
+
+    // Load choices + options
+    await LoadChoices(conn, feats);
+    
+    return feats.Values.Select(f => f.ToFeatModel());
+}
+
+    private async Task<Dictionary<Guid, FeatDbModel>> LoadBaseFeats(NpgsqlConnection conn)
     {
-        throw new NotImplementedException();
+        var sql = @"
+            SELECT e.id, e.name, e.is_public AS IsPublic, e.is_official AS IsOfficial,
+                   e.created_by_user_id AS CreatedByUserId, e.created_at AS CreatedAt,
+                   e.used_ruleset AS UsedRuleset, e.entity_type AS Type,
+                   f.effect
+            FROM dnd_entity e
+            JOIN feat f ON e.id = f.id
+            WHERE e.entity_type = @EntityType;";
+
+        var feats = await conn.QueryAsync<FeatDbModel>(sql, new { EntityType = EntityType.Feat });
+        return feats.ToDictionary(f => f.Id);
     }
+
+    private async Task LoadAbilityScoreIncreases(NpgsqlConnection conn, Dictionary<Guid, FeatDbModel> feats)
+    {
+        var sql = @"SELECT entity_id, ability, amount 
+                    FROM ability_score_increase 
+                    WHERE entity_id = ANY(@Ids);";
+
+        var abilityIncreases = await conn.QueryAsync(sql, new { Ids = feats.Keys.ToArray() });
+
+        foreach (var asi in abilityIncreases)
+        {
+            if (feats.TryGetValue((Guid)asi.entity_id, out var feat))
+            {
+                feat.AbilityScoreIncreases ??= new List<AbilityScoreIncrease>();
+                feat.AbilityScoreIncreases.Add(new AbilityScoreIncrease
+                {
+                    Ability = asi.ability,
+                    Amount = asi.amount
+                });
+            }
+        }
+    }
+
+    private async Task LoadChoices(NpgsqlConnection conn, Dictionary<Guid, FeatDbModel> feats)
+    {
+        var sqlChoices = @"SELECT id, entity_id, description, number_to_choose, type 
+                           FROM choice 
+                           WHERE entity_id = ANY(@Ids);";
+
+        var choices = await conn.QueryAsync(sqlChoices, new { Ids = feats.Keys.ToArray() });
+
+        if (!choices.Any())
+            return;
+
+        var sqlOptions = @"SELECT choice_id, value 
+                           FROM choice_option 
+                           WHERE choice_id = ANY(@ChoiceIds);";
+
+        var options = await conn.QueryAsync(sqlOptions, new { ChoiceIds = choices.Select(c => (int)c.id).ToArray() });
+
+        var optionsByChoice = options.GroupBy(o => (int)o.choice_id)
+                                     .ToDictionary(g => g.Key, g => g.Select(x => (string)x.value).ToList());
+
+        foreach (var choice in choices)
+        {
+            if (!feats.TryGetValue((Guid)choice.entity_id, out var feat))
+                continue;
+
+            if ((string)choice.type == "Effect")
+            {
+                feat.EffectChoices ??= new List<Choice<string>>();
+                feat.EffectChoices.Add(new Choice<string>
+                {
+                    Description = choice.description,
+                    NumberToChoose = choice.number_to_choose,
+                    Options = optionsByChoice.GetValueOrDefault((int)choice.id, new List<string>())
+                });
+            }
+            else if ((string)choice.type == "AbilityScoreIncrease")
+            {
+                feat.AbilityScoreIncreaseChoices ??= new List<Choice<AbilityScoreIncrease>>();
+                feat.AbilityScoreIncreaseChoices.Add(new Choice<AbilityScoreIncrease>
+                {
+                    Description = choice.description,
+                    NumberToChoose = choice.number_to_choose,
+                    Options = optionsByChoice.GetValueOrDefault((int)choice.id, new List<string>())
+                        .Select(o =>
+                        {
+                            var parts = o.Split('+');
+                            return new AbilityScoreIncrease { Ability = parts[0], Amount = int.Parse(parts[1]) };
+                        }).ToList()
+                });
+            }
+        }
+    }
+
 }
