@@ -18,7 +18,7 @@ public class FeatController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(FeatCreateModelDto item)
+    public async Task<IActionResult> CreateFeat([FromBody] FeatCreateModelDto item)
     {
         if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
         
@@ -27,8 +27,8 @@ public class FeatController : ControllerBase
         return result != null ? Ok(result) : NotFound();
     }
     
-    [HttpPost]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpDelete]
+    public async Task<IActionResult> DeleteFeat([FromBody] Guid id)
     {
         if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
 
@@ -37,18 +37,8 @@ public class FeatController : ControllerBase
         return result != null ? Ok(result) : NotFound();
     }
     
-    [HttpPost]
-    public async Task<IActionResult> Get(Guid id)
-    {
-        if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
-        
-        FeatModel result = await _featService.GetResult(id);
-        
-        return result != null ? Ok(result) : NotFound();
-    }
-    
-    [HttpPost]
-    public async Task<IActionResult> Update(FeatCreateModelDto item, Guid id)
+    [HttpPut]
+    public async Task<IActionResult> UpdateFeat([FromBody] FeatCreateModelDto item, Guid id)
     {
         if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
         
@@ -57,7 +47,33 @@ public class FeatController : ControllerBase
         return result != null ? Ok(result) : NotFound();
     }
     
+    [HttpGet]
+    [Route("Feat/{featId}")]
+    public async Task<IActionResult> GetSpecificFeat([FromRoute] Guid featId)
+    {
+        if (string.IsNullOrEmpty(featId.ToString())) return BadRequest();
+        
+        FeatModel result = await _featService.GetResult(featId);
+        
+        return result != null ? Ok(result) : NotFound();
+    }
     
+    [HttpGet]
+    [Route("Feat/SimpleList")]
+    public async Task<IActionResult> GetSimpleFeatList()
+    {
+        FeatModel result = null;
+        
+        return result != null ? Ok(result) : NotFound();
+    }
     
+    [HttpGet]
+    [Route("Feat/DetailedList")]
+    public async Task<IActionResult> GetDetailedFeatList()
+    {
+        FeatModel result = null;
+        
+        return result != null ? Ok(result) : NotFound();
+    }
     
 }

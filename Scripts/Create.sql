@@ -1,4 +1,4 @@
--- Base table for all DndEntity
+-- Base table for all DndEntitys
 CREATE TABLE IF NOT EXISTS dnd_entity (
     id UUID NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL UNIQUE,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS dnd_entity (
     used_ruleset VARCHAR(255) NOT NULL,
     entity_type VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
-    );
+);
 
 --Feats (inherits from dnd_entity) 
 CREATE TABLE feat (
@@ -23,7 +23,7 @@ CREATE TABLE ability_score_increase (
     ability TEXT NOT NULL, amount INT NOT NULL
 );
 
--- Choices (generalized, since you have Choice<T>) 
+-- Choices  
 CREATE TABLE choice (
     id SERIAL PRIMARY KEY,
     entity_id UUID NOT NULL REFERENCES dnd_entity(id) ON DELETE CASCADE,
@@ -31,7 +31,7 @@ CREATE TABLE choice (
     type VARCHAR(50) NOT NULL
 );
 
--- Options inside a choice (string-based for now) 
+-- Options inside a choice 
 CREATE TABLE choice_option (
     id SERIAL PRIMARY KEY,
     choice_id INT NOT NULL REFERENCES choice(id) ON DELETE CASCADE,

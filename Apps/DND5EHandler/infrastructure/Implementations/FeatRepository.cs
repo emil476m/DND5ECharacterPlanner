@@ -2,6 +2,7 @@ using Dapper;
 using infrastructure.Interfaces;
 using infrastructure.Mappers;
 using infrastructure.Models.Feats;
+using infrastructure.Models.Miscellaneous;
 using Npgsql;
 
 namespace infrastructure.Implementations;
@@ -10,23 +11,14 @@ public class FeatRepository : IRepository<FeatModel>
 {
     
     private readonly NpgsqlDataSource _dataSource;
-
-    public FeatRepository(NpgsqlDataSource dataSource)
-    {
-        _dataSource = dataSource;
-    }
     
+    /// <summary>
+    /// Method that creates a new feat and inserts it into the database
+    /// </summary>
+    /// <param name="item">an object containing the data for the new feat</param>
+    /// <returns>returns the object is the transaction is complete</returns>
+    /// <exception cref="Exception"></exception>
     
-    public Task<FeatModel> GetResult(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> Delete(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<FeatModel> Create(FeatModel item)
     {
         var dbFeat = item.ToDbModel();
@@ -126,10 +118,126 @@ public class FeatRepository : IRepository<FeatModel>
     }
     
 
-    
-    
-    public Task<FeatModel> Update(Guid id, FeatModel item)
+    public FeatRepository(NpgsqlDataSource dataSource)
     {
-        throw new NotImplementedException();
+        _dataSource = dataSource;
     }
+    
+    
+    /// <summary>
+    /// Method that deletes a feat
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<bool> Delete(Guid id)
+    {
+        using var conn = _dataSource.OpenConnection();
+        var sql = "DELETE FROM dnd_entity WHERE id = @Id;";
+        return await conn.ExecuteAsync(sql, new { Id = id }) > 0;
+    }
+    
+    /// <summary>
+    /// Method to update a feat
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<FeatModel> Update(Guid id, FeatModel item)
+    {
+        using var conn = _dataSource.OpenConnection();
+        using var transaction = conn.BeginTransaction();
+
+        try
+        {
+            var dbFeat = item.ToDbModel();
+
+            // Update dndEntity
+            var updateEntitySql = @"UPDATE dnd_entity
+                SET name = @Name, is_public = @IsPublic, is_official = @IsOfficial,
+                used_ruleset = @UsedRuleset, entity_type = @Type WHERE id = @Id;";
+            await conn.ExecuteAsync(updateEntitySql, dbFeat, transaction);
+
+            // Update feat
+            var updateFeatSql = "UPDATE feat SET effect = @Effect WHERE id = @Id;";
+            await conn.ExecuteAsync(updateFeatSql, dbFeat, transaction);
+
+            // clear and reinsert subtable data
+            await conn.ExecuteAsync("DELETE FROM ability_score_increase WHERE entity_id = @Id;", new { Id = id }, transaction);
+            await conn.ExecuteAsync("DELETE FROM choice_option WHERE choice_id IN (SELECT id FROM choice WHERE entity_id = @Id);", new { Id = id }, transaction);
+            await conn.ExecuteAsync("DELETE FROM choice WHERE entity_id = @Id;", new { Id = id }, transaction);
+
+            await InsertFixedAbilityScoreIncreases(conn, dbFeat, transaction);
+            await InsertChoices(conn, dbFeat, transaction);
+
+            await transaction.CommitAsync();
+            return item;
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new Exception("Could not update feat", ex);
+        }
+    }
+    
+    /// <summary>
+    /// Reads and returns a feat
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<FeatModel> GetResult(Guid id)
+    {
+        using var conn = _dataSource.OpenConnection();
+
+        var sql = @"SELECT e.*, f.effect FROM dnd_entity e
+        JOIN feat f ON e.id = f.id WHERE e.id = @Id;";
+
+        var entity = await conn.QuerySingleOrDefaultAsync<FeatDbModel>(sql, new { Id = id });
+        if (entity == null) return null;
+
+        var sqlScore = @"SELECT ability, amount FROM ability_score_increase WHERE entity_id = @Id";
+        
+        // Load Ability Score Increases
+        entity.AbilityScoreIncreases = (await conn.QueryAsync<AbilityScoreIncrease>(sqlScore, new { Id = id })).ToList();
+
+        // Load Choices
+        var choices = await conn.QueryAsync<dynamic>("SELECT * FROM choice WHERE entity_id = @Id", new { Id = id });
+
+        foreach (var choice in choices)
+        {
+            var options = await conn.QueryAsync<string>("SELECT value FROM choice_option WHERE choice_id = @ChoiceId", new { ChoiceId = choice.id });
+
+            if (choice.type == "Effect")
+            {
+                entity.EffectChoices.Add(new Choice<string>
+                {
+                    Description = choice.description,
+                    NumberToChoose = choice.number_to_choose,
+                    Options = options.ToList()
+                });
+            }
+            else if (choice.type == "AbilityScoreIncrease")
+            {
+                var asiOptions = options
+                    .Select(o =>
+                    {
+                        var parts = o.Split('+');
+                        return new AbilityScoreIncrease { Ability = parts[0], Amount = int.Parse(parts[1]) };
+                    })
+                    .ToList();
+
+                entity.AbilityScoreIncreaseChoices.Add(new Choice<AbilityScoreIncrease>
+                {
+                    Description = choice.description,
+                    NumberToChoose = choice.number_to_choose,
+                    Options = asiOptions
+                });
+            }
+        }
+
+        return entity.ToFeatModel();
+    }
+
 }

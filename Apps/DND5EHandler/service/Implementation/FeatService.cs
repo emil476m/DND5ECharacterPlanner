@@ -48,6 +48,22 @@ public class FeatService : IService<FeatModel , FeatCreateModelDto>
 
     public Task<FeatModel> Update(Guid id, FeatCreateModelDto item)
     {
-        throw new NotImplementedException();
+        
+        var feat = new FeatModel
+        {
+            Id = id,
+            Name = item.Name,
+            IsPublic = item.IsPublic,
+            IsOfficial = false,
+            CreatedAt = DateTime.UtcNow,
+            UsedRuleset = item.UsedRuleset,
+            Type = EntityType.Feat,
+            Effect = item.Effect,
+            EffectChoices = item.EffectChoices,
+            AbilityScoreIncreaseChoices = item.AbilityScoreIncreaseChoices,
+            AbilityScoreIncreases = item.AbilityScoreIncreases,
+        };
+        
+        return _featRepository.Update(id, feat);
     }
 }
