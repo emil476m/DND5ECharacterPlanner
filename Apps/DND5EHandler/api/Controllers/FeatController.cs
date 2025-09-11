@@ -18,7 +18,7 @@ public class FeatController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] FeatCreateModelDto item)
+    public async Task<IActionResult> Create(FeatCreateModelDto item)
     {
         if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
         
@@ -27,8 +27,8 @@ public class FeatController : ControllerBase
         return result != null ? Ok(result) : NotFound();
     }
     
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] Guid id)
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid id)
     {
         if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
 
@@ -37,8 +37,18 @@ public class FeatController : ControllerBase
         return result != null ? Ok(result) : NotFound();
     }
     
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] FeatCreateModelDto item, Guid id)
+    [HttpPost]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
+        
+        FeatModel result = await _featService.GetResult(id);
+        
+        return result != null ? Ok(result) : NotFound();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Update(FeatCreateModelDto item, Guid id)
     {
         if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
         

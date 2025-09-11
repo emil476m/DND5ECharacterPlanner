@@ -16,6 +16,11 @@ public class FeatRepository : IRepository<FeatModel>
         _dataSource = dataSource;
     }
     
+    
+    public Task<FeatModel> GetResult(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 
     public Task<bool> Delete(Guid id)
     {
