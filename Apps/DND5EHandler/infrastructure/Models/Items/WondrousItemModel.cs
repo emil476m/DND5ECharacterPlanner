@@ -2,7 +2,7 @@ using infrastructure.Models.Miscellaneous.Enums;
 
 namespace infrastructure.Models.Items;
 
-public class WondrousItem : Item
+public class WondrousItemModel : ItemModel
 {
     public Rarity Rarity { get; set; }
     public bool RequiresAttunement { get; set; }

@@ -1,6 +1,6 @@
 namespace infrastructure.Models.Items;
 
-public class Armor : Item
+public class Armor : ItemModel
 {
     public int ArmorClass { get; set; }
     public int MaxDexBonus { get; set; }

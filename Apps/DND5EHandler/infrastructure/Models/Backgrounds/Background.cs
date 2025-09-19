@@ -19,7 +19,7 @@ public class Background : DndEntity
     public List<Choice<string>> LanguageChoices { get; set; } = new();
 
     // Starting Equipment
-    public List<Item> StartingEquipment { get; set; } = new();
+    public List<ItemModel> StartingEquipment { get; set; } = new();
 
     // Background Feature
     public BackgroundFeature Feature { get; set; } = new();
