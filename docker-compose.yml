@@ -1,0 +1,44 @@
+services:
+  database:
+    image: postgres
+    command: -c 'max_connections=100'
+    ports:
+      - 5001:5432
+    #restart: always
+    volumes:
+      - pgdatadnd5e:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: DND5EDb
+      ##todo remember to make this environmental secrets /|\
+      #secret looks like this:
+      #Host=localhost\;Database=DND5EDb\;User Id=postgres\;Password=postgres\;Port=5001
+      #jdbc:postgresql://localhost:5001/DND5EDb?user=postgres&password=postgres
+    networks:
+      - dnd5e_network
+      
+  dnd5ehandler:
+    #restart: always
+    build:
+      context: .
+      dockerfile: Apps/DND5EHandler/Dockerfile
+    ports:
+      - 7000:8000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development #TODO Change away from development if this file is used for release
+      - ASPNETCORE_URLS=http://+:8000 #Ths allows us to use swagger On the API
+      - pgconn=Host=database;Database=DND5EDb;User Id=postgres;Password=postgres;Port=5432 #Connection string for DB
+    depends_on:
+      - database
+    networks:
+      - dnd5e_network
+    
+        
+  
+volumes:
+  pgdatadnd5e:
+
+networks:
+  dnd5e_network:
+    driver: bridge
