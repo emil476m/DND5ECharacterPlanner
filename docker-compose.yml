@@ -13,8 +13,8 @@ services:
       POSTGRES_DB: DND5EDb
       ##todo remember to make this environmental secrets /|\
       #secret looks like this:
-      #Host=localhost\;Database=GameBaseDb\;User Id=postgres\;Password=postgres\;Port=5001
-      #jdbc:postgresql://localhost:5001/GameBaseDb?user=postgres&password=postgres
+      #Host=localhost\;Database=DND5EDb\;User Id=postgres\;Password=postgres\;Port=5001
+      #jdbc:postgresql://localhost:5001/DND5EDb?user=postgres&password=postgres
     networks:
       - dnd5e_network
       
