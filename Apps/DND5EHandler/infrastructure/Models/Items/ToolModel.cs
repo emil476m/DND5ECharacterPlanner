@@ -1,6 +1,6 @@
 namespace infrastructure.Models.Items;
 
-public class Tool : ItemModel
+public class ToolModel : ItemModel
 {
     public string ProficiencyRequired { get; set; }
 }

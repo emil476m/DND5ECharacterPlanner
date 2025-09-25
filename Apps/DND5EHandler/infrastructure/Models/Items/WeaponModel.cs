@@ -1,6 +1,6 @@
 namespace infrastructure.Models.Items;
 
-public class Weapon : ItemModel
+public class WeaponModel : ItemModel
 {
     public string Damage { get; set; } // example 1d8 or 2d12+4
     public string DamageType { get; set; } // example Slashing, Piercing, Fire
