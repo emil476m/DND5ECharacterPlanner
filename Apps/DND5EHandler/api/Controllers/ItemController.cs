@@ -5,6 +5,7 @@ using service.Interfaces;
 namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
+[Produces("application/json")]
 public class ItemController : ControllerBase
 {
     
@@ -18,22 +19,23 @@ public class ItemController : ControllerBase
     // Read Endpoints
     
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
         var result = await _itemService.GetAllItems();
-        return result != null ? Ok(result) : NotFound();
+        return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetByIdAsync(Guid id)
     {
         var result = await _itemService.GetItemById(id);
         return result != null ? Ok(result) : NotFound();
     }
     
     // Delete item by id
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteItem(Guid id)
+    
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteItemAsync(Guid id)
     {
         var result = await _itemService.DeleteItem(id);
         return result ? Ok() : NotFound();
@@ -42,74 +44,76 @@ public class ItemController : ControllerBase
     // Create Endpoints
     
     [HttpPost("Armor")]
-    public async Task<ActionResult<ItemModel>> CreateArmor([FromBody] ArmorModel armor)
+    public async Task<ActionResult<ItemModel>> CreateArmorAsync([FromBody] ArmorModel armor)
     {
         var result = await _itemService.CreateArmor(armor);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        return Ok(result);;
     }
 
     [HttpPost("Weapon")]
-    public async Task<ActionResult<ItemModel>> CreateWeapon([FromBody] WeaponModel weapon)
+    public async Task<ActionResult<ItemModel>> CreateWeaponAsync([FromBody] WeaponModel weapon)
     {
         var result = await _itemService.CreateWeapon(weapon);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [HttpPost("Tool")]
-    public async Task<ActionResult<ItemModel>> CreateTool([FromBody] ToolModel tool)
+    public async Task<ActionResult<ItemModel>> CreateToolAsync([FromBody] ToolModel tool)
     {
         var result = await _itemService.CreateTool(tool);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [HttpPost("Currency")]
-    public async Task<ActionResult<ItemModel>> CreateCurrency([FromBody] CurrencyModel currency)
+    public async Task<ActionResult<ItemModel>> CreateCurrencyAsync([FromBody] CurrencyModel currency)
     {
         var result = await _itemService.CreateCurrency(currency);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [HttpPost("Wondrous")]
-    public async Task<ActionResult<ItemModel>> CreateWondrous([FromBody] WondrousItemModel wondrous)
+    public async Task<ActionResult<ItemModel>> CreateWondrousAsync([FromBody] WondrousItemModel wondrous)
     {
         var result = await _itemService.CreateWondrous(wondrous);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        return Ok(result);
     }
     
     // Update Endpoints
     
     [HttpPut("Armor")]
-    public async Task<ActionResult<ItemModel>> UpdateArmor([FromBody] ArmorModel armor)
+    public async Task<ActionResult<ItemModel>> UpdateArmorAsync([FromBody] ArmorModel armor)
     {
-        var result = await _itemService.CreateArmor(armor);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        var result = await _itemService.UpdateArmor(armor);
+        return Ok(result);
     }
 
     [HttpPut("Weapon")]
-    public async Task<ActionResult<ItemModel>> UpdateWeapon([FromBody] WeaponModel weapon)
+    public async Task<ActionResult<ItemModel>> UpdateWeaponAsync([FromBody] WeaponModel weapon)
     {
-        var result = await _itemService.CreateWeapon(weapon);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        var result = await _itemService.UpdateWeapon(weapon);
+        return Ok(result);
     }
 
     [HttpPut("Tool")]
-    public async Task<ActionResult<ItemModel>> UpdateTool([FromBody] ToolModel tool)
+    public async Task<ActionResult<ItemModel>> UpdateToolAsync([FromBody] ToolModel tool)
     {
-        var result = await _itemService.CreateTool(tool);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        var result = await _itemService.UpdateTool(tool);
+        return Ok(result);
     }
 
     [HttpPut("Currency")]
-    public async Task<ActionResult<ItemModel>> UpdateCurrency([FromBody] CurrencyModel currency)
+    public async Task<ActionResult<ItemModel>> UpdateCurrencyAsync([FromBody] CurrencyModel currency)
     {
-        var result = await _itemService.CreateCurrency(currency);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        var result = await _itemService.UpdateCurrency(currency);
+        return Ok(result);
     }
 
     [HttpPut("Wondrous")]
-    public async Task<ActionResult<ItemModel>> UpdateWondrous([FromBody] WondrousItemModel wondrous)
+    public async Task<ActionResult<ItemModel>> UpdateWondrousAsync([FromBody] WondrousItemModel wondrous)
     {
-        var result = await _itemService.CreateWondrous(wondrous);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        var result = await _itemService.UpdateWondrous(wondrous);
+        return Ok(result);
+        
+        
     }
 }
