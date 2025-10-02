@@ -1,3 +1,5 @@
+---------------------------------------------------Feats-------------------------------------------------
+
 -- 1. Simple feat (just effect)
 INSERT INTO dnd_entity (id, name, is_public, is_official, created_by_user_id, created_at, used_ruleset, entity_type)
 VALUES ('00000000-0000-0000-0000-000000000001', 'Keen Mind', true, true, NULL, NOW(), '2014', 1);
@@ -70,5 +72,41 @@ INSERT INTO dnd_entity VALUES ('00000000-0000-0000-0000-000000000010', 'Arcane G
 INSERT INTO feat VALUES ('00000000-0000-0000-0000-000000000010', 'Gain a magical boost');
 INSERT INTO choice (entity_id, description, number_to_choose, type)
 VALUES ('00000000-0000-0000-0000-000000000010', 'Choose an ability score to increase', 1, 'AbilityScoreIncrease');
-INSERT INTO choice_option (choice_id, value) VALUES
-                                                 (7, 'INT+1'), (7, 'CHA+1'), (7, 'WIS+1');
+INSERT INTO choice_option (choice_id, value) VALUES(7, 'INT+1'), (7, 'CHA+1'), (7, 'WIS+1');
+
+------------------------------------------------Items------------------------------------------------
+
+-- 1. Armor: Chain Mail
+INSERT INTO dnd_entity VALUES('20000000-0000-0000-0000-000000000001', 'Chain Mail', true, true, NULL, NOW(), '2014', 2);
+INSERT INTO item VALUES('20000000-0000-0000-0000-000000000001', 'ArmorAndShields', 'Heavy armor, AC 16, requires proficiency', 55.00, '75 gp');
+INSERT INTO armor VALUES('20000000-0000-0000-0000-000000000001', 16, 0, true, 'HeavyArmor', 13, false, true);
+
+
+-- 2. Weapon: Longsword
+INSERT INTO dnd_entity VALUES('20000000-0000-0000-0000-000000000002', 'Longsword', true, true, NULL, NOW(), '2014', 2);
+INSERT INTO item VALUES('20000000-0000-0000-0000-000000000002', 'Weapon', 'Versatile melee weapon', 3.00, '15 gp');
+INSERT INTO weapon VALUES('20000000-0000-0000-0000-000000000002', '1d8', 'Slashing', 'MartialMelee', 'Versatile (1d10)', 5);
+
+
+-- 3. Tool: Thieves'' Tools
+INSERT INTO dnd_entity VALUES('20000000-0000-0000-0000-000000000003', 'Thieves'' Tools', true, true, NULL, NOW(), '2014', 2);
+INSERT INTO item VALUES('20000000-0000-0000-0000-000000000003', 'Tool', 'Set of lockpicks, small tools for disabling traps', 1.00, '25 gp');
+INSERT INTO tool VALUES('20000000-0000-0000-0000-000000000003', 'ThievesTools');
+
+
+-- 4. Currency: 100 gp
+INSERT INTO dnd_entity VALUES('20000000-0000-0000-0000-000000000004', 'Gold Coins (100 gp)', true, false, NULL, NOW(), '2014', 2);
+INSERT INTO item VALUES('20000000-0000-0000-0000-000000000004', 'Currency', 'Stack of gold coins', 10.00, NULL);
+INSERT INTO currency VALUES('20000000-0000-0000-0000-000000000004', 'gp', 100);
+
+
+-- 5. Wondrous Item: Cloak of Protection
+INSERT INTO dnd_entity VALUES('20000000-0000-0000-0000-000000000005', 'Cloak of Protection', true, true, NULL, NOW(), '2014', 2);
+INSERT INTO item VALUES('20000000-0000-0000-0000-000000000005', 'WondrousItem', 'Grants +1 to AC and saving throws while worn', 1.00, '5000 gp');
+INSERT INTO wondrous_item VALUES('20000000-0000-0000-0000-000000000005', 'Very Rare', true);
+
+
+-- 6. Adventuring Gear: 50ft Rope
+INSERT INTO dnd_entity VALUES('20000000-0000-0000-0000-000000000006', '50 ft Hempen Rope', true, true, NULL, NOW(), '2014', 2);
+INSERT INTO item VALUES('20000000-0000-0000-0000-000000000006', 'AdventuringGear', '50 feet of hempen rope', 10.00, '1 gp');
+INSERT INTO adventuring_gear VALUES('20000000-0000-0000-0000-000000000006', 'Rope');
