@@ -1,6 +1,6 @@
 using infrastructure.Models.Miscellaneous.Enums;
 
-namespace api.TransferModels;
+namespace api.TransferModels.DndEntities;
 
 public class DndEntityDto
 {

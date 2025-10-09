@@ -1,3 +1,4 @@
+using api.TransferModels.DndEntities;
 using infrastructure.Models.Miscellaneous;
 
 namespace api.TransferModels.Feats;
