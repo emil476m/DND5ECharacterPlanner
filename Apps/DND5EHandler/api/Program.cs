@@ -1,6 +1,6 @@
+using Domain.Models.Feats;
 using infrastructure.Implementations;
 using infrastructure.Interfaces;
-using infrastructure.Models.Feats;
 using service.Implementation;
 using service.Interfaces;
 

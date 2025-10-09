@@ -1,5 +1,5 @@
 using api.TransferModels.DndEntities;
-using infrastructure.Models;
+using Domain.Models;
 
 namespace api.Mappers.DndEntities;
 

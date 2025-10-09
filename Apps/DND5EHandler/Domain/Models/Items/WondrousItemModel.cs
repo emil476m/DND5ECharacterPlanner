@@ -1,6 +1,6 @@
-using infrastructure.Models.Miscellaneous.Enums;
+using Domain.Enums;
 
-namespace infrastructure.Models.Items;
+namespace Domain.Models.Items;
 
 public class WondrousItemModel : ItemModel
 {

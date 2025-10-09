@@ -1,8 +1,7 @@
+using Domain.Enums;
+using Domain.Models;
+using Domain.Models.Feats;
 using infrastructure.Interfaces;
-using infrastructure.Models;
-using infrastructure.Models.Feats;
-using infrastructure.Models.Miscellaneous;
-using infrastructure.Models.Miscellaneous.Enums;
 using service.Interfaces;
 
 namespace service.Implementation;

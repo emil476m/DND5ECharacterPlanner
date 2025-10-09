@@ -1,8 +1,8 @@
-using infrastructure.Models.Feats;
-using infrastructure.Models.Items;
-using infrastructure.Models.Miscellaneous;
+using Domain.Models.Feats;
+using Domain.Models.Items;
+using Domain.Models.Miscellaneous;
 
-namespace infrastructure.Models.Backgrounds;
+namespace Domain.Models.Backgrounds;
 
 public class Background : DndEntity
 {

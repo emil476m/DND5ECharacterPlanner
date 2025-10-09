@@ -1,4 +1,4 @@
-namespace infrastructure.Models.Miscellaneous;
+namespace Domain.Models.Miscellaneous;
 
 public class Choice<T>
 {

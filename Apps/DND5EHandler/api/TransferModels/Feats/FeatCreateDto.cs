@@ -1,5 +1,5 @@
 using api.TransferModels.DndEntities;
-using infrastructure.Models.Miscellaneous;
+using Domain.Models.Miscellaneous;
 
 namespace api.TransferModels.Feats;
 

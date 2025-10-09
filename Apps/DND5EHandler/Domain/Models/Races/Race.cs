@@ -1,4 +1,4 @@
-namespace infrastructure.Models.Races;
+namespace Domain.Models.Races;
 
 public class Race : DndEntity
 {

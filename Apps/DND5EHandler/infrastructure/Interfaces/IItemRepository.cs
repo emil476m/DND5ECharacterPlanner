@@ -1,4 +1,4 @@
-using infrastructure.Models.Items;
+using Domain.Models.Items;
 
 namespace infrastructure.Interfaces;
 

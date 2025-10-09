@@ -1,6 +1,6 @@
 using api.TransferModels.Feats;
-using infrastructure.Models.Feats;
-using infrastructure.Models.Miscellaneous.Enums;
+using Domain.Enums;
+using Domain.Models.Feats;
 
 namespace api.Mappers.Feats;
 

@@ -1,4 +1,4 @@
-using infrastructure.Models.Miscellaneous.Enums;
+using Domain.Enums;
 
 namespace api.TransferModels.DndEntities;
 

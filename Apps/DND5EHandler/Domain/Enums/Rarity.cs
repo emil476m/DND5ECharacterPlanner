@@ -1,4 +1,4 @@
-namespace infrastructure.Models.Miscellaneous.Enums;
+namespace Domain.Enums;
 
 public enum Rarity
 {

@@ -1,5 +1,5 @@
+using Domain.Models.Items;
 using infrastructure.Interfaces;
-using infrastructure.Models.Items;
 using service.Interfaces;
 
 namespace service.Implementation;

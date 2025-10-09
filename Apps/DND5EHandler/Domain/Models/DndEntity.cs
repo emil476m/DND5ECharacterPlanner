@@ -1,6 +1,6 @@
-using infrastructure.Models.Miscellaneous.Enums;
+using Domain.Enums;
 
-namespace infrastructure.Models;
+namespace Domain.Models;
 
 public abstract class DndEntity
 {

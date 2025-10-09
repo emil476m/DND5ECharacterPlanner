@@ -1,3 +1,4 @@
+using Domain.Models.Feats;
 using infrastructure.Models.Feats;
 
 namespace infrastructure.Mappers;

@@ -1,4 +1,4 @@
-namespace infrastructure.Models.Spells;
+namespace Domain.Models.Spells;
 
 public class Spell : DndEntity
 {

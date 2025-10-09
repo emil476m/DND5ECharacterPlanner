@@ -1,6 +1,6 @@
-using infrastructure.Models.Miscellaneous;
+using Domain.Models.Miscellaneous;
 
-namespace infrastructure.Models.Feats;
+namespace Domain.Models.Feats;
 
 public class FeatModel : DndEntity
 {

@@ -1,7 +1,7 @@
-using infrastructure.Models.Miscellaneous;
-using infrastructure.Models.Miscellaneous.Enums;
+using Domain.Enums;
+using Domain.Models.Miscellaneous;
 
-namespace infrastructure.Models.Items;
+namespace Domain.Models.Items;
 
 public abstract class ItemModel : DndEntity
 {

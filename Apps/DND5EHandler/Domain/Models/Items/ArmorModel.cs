@@ -1,4 +1,4 @@
-namespace infrastructure.Models.Items;
+namespace Domain.Models.Items;
 
 public class ArmorModel : ItemModel
 {

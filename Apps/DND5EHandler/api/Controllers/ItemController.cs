@@ -1,4 +1,4 @@
-using infrastructure.Models.Items;
+using Domain.Models.Items;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
 

@@ -1,4 +1,5 @@
-using infrastructure.Models.Miscellaneous;
+using Domain.Models;
+using Domain.Models.Miscellaneous;
 
 namespace infrastructure.Models.Feats;
 

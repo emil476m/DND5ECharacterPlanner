@@ -1,4 +1,4 @@
-namespace infrastructure.Models.Backgrounds;
+namespace Domain.Models.Backgrounds;
 
 public class BackgroundFeature
 {

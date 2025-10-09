@@ -1,6 +1,6 @@
-using infrastructure.Models.Miscellaneous;
+using Domain.Models.Miscellaneous;
 
-namespace infrastructure.Models.Races;
+namespace Domain.Models.Races;
 
 public class RacialAbility
 {

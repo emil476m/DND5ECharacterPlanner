@@ -1,4 +1,4 @@
-using infrastructure.Models;
+using Domain.Models;
 
 namespace service.Interfaces;
 
