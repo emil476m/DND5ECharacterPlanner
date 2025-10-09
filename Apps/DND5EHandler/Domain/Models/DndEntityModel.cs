@@ -2,7 +2,7 @@ using Domain.Enums;
 
 namespace Domain.Models;
 
-public abstract class DndEntity
+public abstract class DndEntityModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

@@ -1,6 +1,6 @@
 namespace Domain.Models.Miscellaneous;
 
-public class UsageLimit
+public class UsageLimitModel
 {
     public int? UsesPerLongRest { get; set; }
     public int? UsesPerShortRest { get; set; }

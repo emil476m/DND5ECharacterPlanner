@@ -218,7 +218,7 @@ public class FeatRepository : IRepository<FeatModel>
         var sqlScore = @"SELECT ability, amount FROM ability_score_increase WHERE entity_id = @Id";
         
         // Load Ability Score Increases
-        entity.AbilityScoreIncreases = (await conn.QueryAsync<AbilityScoreIncrease>(sqlScore, new { Id = id })).ToList();
+        entity.AbilityScoreIncreases = (await conn.QueryAsync<AbilityScoreIncreaseModel>(sqlScore, new { Id = id })).ToList();
 
         // Load Choices
         var choices = await conn.QueryAsync<dynamic>("SELECT * FROM choice WHERE entity_id = @Id", new { Id = id });
@@ -229,7 +229,7 @@ public class FeatRepository : IRepository<FeatModel>
 
             if (choice.type == "Effect")
             {
-                entity.EffectChoices.Add(new Choice<string>
+                entity.EffectChoices.Add(new ChoiceModel<string>
                 {
                     Description = choice.description,
                     NumberToChoose = choice.number_to_choose,
@@ -242,11 +242,11 @@ public class FeatRepository : IRepository<FeatModel>
                     .Select(o =>
                     {
                         var parts = o.Split('+');
-                        return new AbilityScoreIncrease { Ability = parts[0], Amount = int.Parse(parts[1]) };
+                        return new AbilityScoreIncreaseModel { Ability = parts[0], Amount = int.Parse(parts[1]) };
                     })
                     .ToList();
 
-                entity.AbilityScoreIncreaseChoices.Add(new Choice<AbilityScoreIncrease>
+                entity.AbilityScoreIncreaseChoices.Add(new ChoiceModel<AbilityScoreIncreaseModel>
                 {
                     Description = choice.description,
                     NumberToChoose = choice.number_to_choose,
@@ -337,8 +337,8 @@ public class FeatRepository : IRepository<FeatModel>
         {
             if (feats.TryGetValue((Guid)asi.entity_id, out var feat))
             {
-                feat.AbilityScoreIncreases ??= new List<AbilityScoreIncrease>();
-                feat.AbilityScoreIncreases.Add(new AbilityScoreIncrease
+                feat.AbilityScoreIncreases ??= new List<AbilityScoreIncreaseModel>();
+                feat.AbilityScoreIncreases.Add(new AbilityScoreIncreaseModel
                 {
                     Ability = asi.ability,
                     Amount = asi.amount
@@ -374,8 +374,8 @@ public class FeatRepository : IRepository<FeatModel>
 
             if ((string)choice.type == "Effect")
             {
-                feat.EffectChoices ??= new List<Choice<string>>();
-                feat.EffectChoices.Add(new Choice<string>
+                feat.EffectChoices ??= new List<ChoiceModel<string>>();
+                feat.EffectChoices.Add(new ChoiceModel<string>
                 {
                     Description = choice.description,
                     NumberToChoose = choice.number_to_choose,
@@ -384,8 +384,8 @@ public class FeatRepository : IRepository<FeatModel>
             }
             else if ((string)choice.type == "AbilityScoreIncrease")
             {
-                feat.AbilityScoreIncreaseChoices ??= new List<Choice<AbilityScoreIncrease>>();
-                feat.AbilityScoreIncreaseChoices.Add(new Choice<AbilityScoreIncrease>
+                feat.AbilityScoreIncreaseChoices ??= new List<ChoiceModel<AbilityScoreIncreaseModel>>();
+                feat.AbilityScoreIncreaseChoices.Add(new ChoiceModel<AbilityScoreIncreaseModel>
                 {
                     Description = choice.description,
                     NumberToChoose = choice.number_to_choose,
@@ -393,7 +393,7 @@ public class FeatRepository : IRepository<FeatModel>
                         .Select(o =>
                         {
                             var parts = o.Split('+');
-                            return new AbilityScoreIncrease { Ability = parts[0], Amount = int.Parse(parts[1]) };
+                            return new AbilityScoreIncreaseModel { Ability = parts[0], Amount = int.Parse(parts[1]) };
                         }).ToList()
                 });
             }

@@ -1,6 +1,6 @@
 namespace Domain.Models.Miscellaneous;
 
-public class Choice<T>
+public class ChoiceModel<T>
 {
     public string Description { get; set; } // "Choose one language of your choice"
     public int NumberToChoose { get; set; }

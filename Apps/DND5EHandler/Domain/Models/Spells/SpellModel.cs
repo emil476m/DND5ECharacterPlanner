@@ -1,6 +1,6 @@
 namespace Domain.Models.Spells;
 
-public class Spell : DndEntity
+public class SpellModel : DndEntityModel
 {
     public int Level { get; set; }
     public string School { get; set; }

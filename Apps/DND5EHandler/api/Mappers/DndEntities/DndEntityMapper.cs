@@ -6,15 +6,15 @@ namespace api.Mappers.DndEntities;
 public static class DndEntityMapper
 {
     // Domain -> Simple Model
-    public static DndEntitySimpleModel ToDndEntitySimpleModel(this DndEntity entity)
+    public static DndEntitySimpleModel ToDndEntitySimpleModel(this DndEntityModel entityModel)
     {
-        if (entity is null) throw new ArgumentNullException(nameof(entity));
+        if (entityModel is null) throw new ArgumentNullException(nameof(entityModel));
         return new DndEntitySimpleModel
         {
-            Id = entity.Id,
-            Name = entity.Name,
-            IsPublic = entity.IsPublic,
-            UsedRuleset = entity.UsedRuleset
+            Id = entityModel.Id,
+            Name = entityModel.Name,
+            IsPublic = entityModel.IsPublic,
+            UsedRuleset = entityModel.UsedRuleset
         };
     }
     
@@ -45,32 +45,32 @@ public static class DndEntityMapper
     }
     
     // Domain -> Simple DTO
-    public static DndEntitySimpleDto ToDndEntitySimpleDto(this DndEntity entity)
+    public static DndEntitySimpleDto ToDndEntitySimpleDto(this DndEntityModel entityModel)
     {
-        if (entity is null) throw new ArgumentNullException(nameof(entity));
+        if (entityModel is null) throw new ArgumentNullException(nameof(entityModel));
         return new DndEntitySimpleDto
         {
-            Id = entity.Id,
-            Name = entity.Name,
-            IsPublic = entity.IsPublic,
-            UsedRuleset = entity.UsedRuleset
+            Id = entityModel.Id,
+            Name = entityModel.Name,
+            IsPublic = entityModel.IsPublic,
+            UsedRuleset = entityModel.UsedRuleset
         };
     }
     
     // Domain -> Full DTO
-    public static DndEntityDto ToDndEntityDto(this DndEntity entity)
+    public static DndEntityDto ToDndEntityDto(this DndEntityModel entityModel)
     {
-        if (entity is null) throw new ArgumentNullException(nameof(entity));
+        if (entityModel is null) throw new ArgumentNullException(nameof(entityModel));
         return new DndEntityDto
         {
-            Id = entity.Id,
-            Name = entity.Name,
-            IsPublic = entity.IsPublic,
-            IsOfficial = entity.IsOfficial,
-            CreatedByUserId = entity.CreatedByUserId,
-            CreatedAt = entity.CreatedAt,
-            UsedRuleset = entity.UsedRuleset,
-            Type = entity.Type
+            Id = entityModel.Id,
+            Name = entityModel.Name,
+            IsPublic = entityModel.IsPublic,
+            IsOfficial = entityModel.IsOfficial,
+            CreatedByUserId = entityModel.CreatedByUserId,
+            CreatedAt = entityModel.CreatedAt,
+            UsedRuleset = entityModel.UsedRuleset,
+            Type = entityModel.Type
         };
     }
     
