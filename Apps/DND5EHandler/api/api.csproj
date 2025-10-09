@@ -24,4 +24,8 @@
       <ProjectReference Include="..\service\service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Mappers\Items\" />
+    </ItemGroup>
+
 </Project>
