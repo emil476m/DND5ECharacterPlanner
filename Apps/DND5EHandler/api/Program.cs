@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddNpgsqlDataSource(Environment.GetEnvironmentVariable("pgconn")!,
     dataSourceBuilder => dataSourceBuilder.EnableParameterLogging());
 
-builder.Services.AddScoped<IService<FeatModel , FeatCreateModelDto>, FeatService>();
+builder.Services.AddScoped<IService<FeatModel>, FeatService>();
 builder.Services.AddScoped<IRepository<FeatModel>, FeatRepository>();
 
 builder.Services.AddEndpointsApiExplorer();

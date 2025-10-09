@@ -6,7 +6,7 @@ using service.Interfaces;
 
 namespace service.Implementation;
 
-public class FeatService : IService<FeatModel , FeatCreateModelDto>
+public class FeatService : IService<FeatModel>
 {
     
     private readonly IRepository<FeatModel> _featRepository;
@@ -36,7 +36,7 @@ public class FeatService : IService<FeatModel , FeatCreateModelDto>
         return _featRepository.Delete(id);
     }
 
-    public Task<FeatModel> Create(FeatCreateModelDto item)
+    public Task<FeatModel> Create(FeatModel item)
     {
         var feat = new FeatModel
         {
@@ -56,7 +56,7 @@ public class FeatService : IService<FeatModel , FeatCreateModelDto>
         return _featRepository.Create(feat);
     }
 
-    public Task<FeatModel> Update(Guid id, FeatCreateModelDto item)
+    public Task<FeatModel> Update(Guid id, FeatModel item)
     {
         
         var feat = new FeatModel

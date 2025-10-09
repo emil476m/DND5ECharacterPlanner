@@ -1,10 +1,11 @@
 using Dapper;
+using Domain.Enums;
+using Domain.Models;
+using Domain.Models.Feats;
+using Domain.Models.Miscellaneous;
 using infrastructure.Interfaces;
 using infrastructure.Mappers;
-using infrastructure.Models;
 using infrastructure.Models.Feats;
-using infrastructure.Models.Miscellaneous;
-using infrastructure.Models.Miscellaneous.Enums;
 using Npgsql;
 
 namespace infrastructure.Implementations;
@@ -14,11 +15,17 @@ public class FeatRepository : IRepository<FeatModel>
     
     private readonly NpgsqlDataSource _dataSource;
     
+    
+    public FeatRepository(NpgsqlDataSource dataSource)
+    {
+        _dataSource = dataSource;
+    }
+    
     /// <summary>
     /// Method that creates a new feat and inserts it into the database
     /// </summary>
     /// <param name="item">an object containing the data for the new feat</param>
-    /// <returns>returns the object is the transaction is complete</returns>
+    /// <returns>returns the object if the transaction is complete</returns>
     /// <exception cref="Exception"></exception>
     
     public async Task<FeatModel> Create(FeatModel item)
@@ -120,10 +127,7 @@ public class FeatRepository : IRepository<FeatModel>
     }
     
 
-    public FeatRepository(NpgsqlDataSource dataSource)
-    {
-        _dataSource = dataSource;
-    }
+    
     
 
     /// <summary>
@@ -193,8 +197,20 @@ public class FeatRepository : IRepository<FeatModel>
     {
         using var conn = _dataSource.OpenConnection();
 
-        var sql = @"SELECT e.*, f.effect FROM dnd_entity e
-        JOIN feat f ON e.id = f.id WHERE e.id = @Id;";
+        var sql = $@"
+            SELECT 
+                e.id AS {nameof(FeatDbModel.Id)},
+                e.name AS {nameof(FeatDbModel.Name)},
+                e.is_public AS {nameof(FeatDbModel.IsPublic)},
+                e.is_official AS {nameof(FeatDbModel.IsOfficial)},
+                e.created_by_user_id AS {nameof(FeatDbModel.CreatedByUserId)},
+                e.created_at AS {nameof(FeatDbModel.CreatedAt)},
+                e.used_ruleset AS {nameof(FeatDbModel.UsedRuleset)},
+                e.entity_type AS {nameof(FeatDbModel.Type)},
+                f.effect AS {nameof(FeatDbModel.Effect)}
+            FROM dnd_entity e
+            JOIN feat f ON e.id = f.id
+            WHERE e.id = @Id;";
 
         var entity = await conn.QuerySingleOrDefaultAsync<FeatDbModel>(sql, new { Id = id });
         if (entity == null) return null;
@@ -246,17 +262,20 @@ public class FeatRepository : IRepository<FeatModel>
     /// gets a simple list of all the feats, simple meaning with minimal data
     /// </summary>
     /// <returns></returns>
-    public async Task<IEnumerable<SimpelEntityDto>> GetSimpleList()
+    public async Task<IEnumerable<DndEntitySimpleModel>> GetSimpleList()
     {
         try
         {
             using var conn = await _dataSource.OpenConnectionAsync();
 
-            var sql = @$"SELECT id AS {nameof(SimpelEntityDto.Id)}, name AS {nameof(SimpelEntityDto.Name)}, is_public AS {nameof(SimpelEntityDto.IsPublic)}, 
-                     used_ruleset AS {nameof(SimpelEntityDto.UsedRuleset)}
-                     FROM dnd_entity WHERE entity_type = @EntityType;";
+            var sql = @$"SELECT 
+                            id AS {nameof(DndEntitySimpleModel.Id)}, 
+                            name AS {nameof(DndEntitySimpleModel.Name)}, 
+                            is_public AS {nameof(DndEntitySimpleModel.IsPublic)}, 
+                            used_ruleset AS {nameof(DndEntitySimpleModel.UsedRuleset)}
+                         FROM dnd_entity WHERE entity_type = @EntityType;";
 
-            return await conn.QueryAsync<SimpelEntityDto>(sql, new { EntityType = EntityType.Feat });
+            return await conn.QueryAsync<DndEntitySimpleModel>(sql, new { EntityType = EntityType.Feat });
         }
         catch (Exception ex)
         {
@@ -269,32 +288,38 @@ public class FeatRepository : IRepository<FeatModel>
     /// </summary>
     /// <returns></returns>
     public async Task<IEnumerable<FeatModel>> GetDetailedList()
-{
-    using var conn = await _dataSource.OpenConnectionAsync();
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
 
-    // Load feats
-    var feats = await LoadBaseFeats(conn);
-    if (!feats.Any()) return Enumerable.Empty<FeatModel>();
+        // Load feats
+        var feats = await LoadBaseFeats(conn);
+        if (!feats.Any()) return Enumerable.Empty<FeatModel>();
 
-    // Load ability score increases
-    await LoadAbilityScoreIncreases(conn, feats);
+        // Load ability score increases
+        await LoadAbilityScoreIncreases(conn, feats);
 
-    // Load choices + options
-    await LoadChoices(conn, feats);
+        // Load choices + options
+        await LoadChoices(conn, feats);
     
-    return feats.Values.Select(f => f.ToFeatModel());
-}
+        return feats.Values.Select(f => f.ToFeatModel());
+    }
 
     private async Task<Dictionary<Guid, FeatDbModel>> LoadBaseFeats(NpgsqlConnection conn)
     {
-        var sql = @"
-            SELECT e.id, e.name, e.is_public AS IsPublic, e.is_official AS IsOfficial,
-                   e.created_by_user_id AS CreatedByUserId, e.created_at AS CreatedAt,
-                   e.used_ruleset AS UsedRuleset, e.entity_type AS Type,
-                   f.effect
-            FROM dnd_entity e
-            JOIN feat f ON e.id = f.id
-            WHERE e.entity_type = @EntityType;";
+        var sql = $@"
+        SELECT
+            e.id AS {nameof(FeatDbModel.Id)},
+            e.name AS {nameof(FeatDbModel.Name)},
+            e.is_public AS {nameof(FeatDbModel.IsPublic)},
+            e.is_official AS {nameof(FeatDbModel.IsOfficial)},
+            e.created_by_user_id AS {nameof(FeatDbModel.CreatedByUserId)},
+            e.created_at AS {nameof(FeatDbModel.CreatedAt)},
+            e.used_ruleset AS {nameof(FeatDbModel.UsedRuleset)},
+            e.entity_type AS {nameof(FeatDbModel.Type)},
+            f.effect AS {nameof(FeatDbModel.Effect)}
+        FROM dnd_entity e
+        JOIN feat f ON e.id = f.id
+        WHERE e.entity_type = @EntityType;";
 
         var feats = await conn.QueryAsync<FeatDbModel>(sql, new { EntityType = EntityType.Feat });
         return feats.ToDictionary(f => f.Id);

@@ -10,12 +10,14 @@ WORKDIR /src
 COPY ["Apps/DND5EHandler/api/api.csproj", "Apps/DND5EHandler/api/"]
 COPY ["Apps/DND5EHandler/service/service.csproj", "Apps/DND5EHandler/service/"]
 COPY ["Apps/DND5EHandler/infrastructure/infrastructure.csproj", "Apps/DND5EHandler/infrastructure/"]
+COPY ["Apps/DND5EHandler/Domain/Domain.csproj", "Apps/DND5EHandler/Domain/"]
 
 RUN dotnet restore "Apps/DND5EHandler/api/api.csproj"
 
 COPY Apps/DND5EHandler/api/ Apps/DND5EHandler/api/
 COPY Apps/DND5EHandler/service/ Apps/DND5EHandler/service/
 COPY Apps/DND5EHandler/infrastructure/ Apps/DND5EHandler/infrastructure/
+COPY Apps/DND5EHandler/Domain/ Apps/DND5EHandler/Domain/
 
 WORKDIR "Apps/DND5EHandler/api"
 RUN dotnet build "./api.csproj" -c $BUILD_CONFIGURATION -o /app/build
