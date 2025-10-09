@@ -1,0 +1,29 @@
+using api.TransferModels.Feats;
+using infrastructure.Models.Feats;
+
+namespace api.Mappers.Feats;
+
+public static class FeatMapper
+{
+    public static FeatDto ToFeatDto(this FeatModel model)
+    {
+        return new FeatDto()
+        {
+            //entity model
+            Id = model.Id,
+            Name = model.Name,
+            IsOfficial = model.IsOfficial,
+            IsPublic = model.IsPublic,
+            CreatedAt = model.CreatedAt,
+            CreatedByUserId = model.CreatedByUserId,
+            UsedRuleset = model.UsedRuleset,
+            Type = model.Type,
+            
+            //feat model
+            Effect = model.Effect,
+            EffectChoices = model.EffectChoices,
+            AbilityScoreIncreases = model.AbilityScoreIncreases,
+            AbilityScoreIncreaseChoices = model.AbilityScoreIncreaseChoices
+        };
+    }
+}

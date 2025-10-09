@@ -1,8 +1,8 @@
 using infrastructure.Models.Miscellaneous;
 
-namespace infrastructure.Models.Feats;
+namespace api.TransferModels.Feats;
 
-public class FeatCreateModelDto : EntityCreateDto
+public class FeatCreateDto : DndEntityCreateDto
 {
     public string Effect { get; set; }
     public List<Choice<string>>? EffectChoices { get; set; } = new();

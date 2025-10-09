@@ -1,8 +1,8 @@
 using infrastructure.Models.Miscellaneous.Enums;
 
-namespace infrastructure.Models;
+namespace api.TransferModels;
 
-public class EntityCreateDto
+public class DndEntityCreateDto
 {
     public string Name { get; set; }
     public bool IsPublic { get; set; }
