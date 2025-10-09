@@ -1,5 +1,6 @@
 using api.TransferModels.Feats;
 using infrastructure.Models.Feats;
+using infrastructure.Models.Miscellaneous.Enums;
 
 namespace api.Mappers.Feats;
 
@@ -24,6 +25,25 @@ public static class FeatMapper
             EffectChoices = model.EffectChoices,
             AbilityScoreIncreases = model.AbilityScoreIncreases,
             AbilityScoreIncreaseChoices = model.AbilityScoreIncreaseChoices
+        };
+    }
+    
+    
+    public static FeatModel ToFeatModel(this FeatCreateDto dto)
+    {
+        return new FeatModel
+        {
+            //EntityModel
+            Name = dto.Name,
+            IsPublic = dto.IsPublic,
+            UsedRuleset = dto.UsedRuleset,
+            Type = EntityType.Feat,
+            
+            //FeatModel
+            Effect = dto.Effect,
+            EffectChoices = dto.EffectChoices,
+            AbilityScoreIncreases = dto.AbilityScoreIncreases ?? new(),
+            AbilityScoreIncreaseChoices = dto.AbilityScoreIncreaseChoices ?? new()
         };
     }
 }

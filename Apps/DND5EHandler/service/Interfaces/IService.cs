@@ -2,18 +2,18 @@ using infrastructure.Models;
 
 namespace service.Interfaces;
 
-public interface IService<TModel, TDto>
+public interface IService<T>
 {
-    Task<TModel> GetResult(Guid id);
+    Task<T> GetResult(Guid id);
     
-    Task <IEnumerable<SimpelEntityDto>> GetSimpleList();
+    Task <IEnumerable<SimpelDndEntityModel>> GetSimpleList();
     
-    Task<IEnumerable<TModel>> GetDetailedList();
+    Task<IEnumerable<T>> GetDetailedList();
     
     Task<bool> Delete(Guid id);
     
-    Task<TModel> Create(TDto item);
+    Task<T> Create(T item);
     
-    Task<TModel> Update(Guid id, TDto item);
+    Task<T> Update(Guid id, T item);
     
 }

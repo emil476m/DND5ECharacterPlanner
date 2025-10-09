@@ -22,7 +22,7 @@ public class FeatService : IService<FeatModel , FeatCreateModelDto>
         return _featRepository.GetResult(id);
     }
 
-    public Task<IEnumerable<SimpelEntityDto>> GetSimpleList()
+    public Task<IEnumerable<SimpelDndEntityModel>> GetSimpleList()
     {
         return _featRepository.GetSimpleList();
     }
