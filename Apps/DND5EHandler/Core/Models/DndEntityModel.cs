@@ -1,8 +1,8 @@
 using Core.Enums;
 
-namespace api.TransferModels.DndEntities;
+namespace Core.Models;
 
-public class DndEntityDto
+public abstract class DndEntityModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -13,3 +13,4 @@ public class DndEntityDto
     public RuleSet UsedRuleset { get; set; } 
     public EntityType Type { get; set; }
 }
+

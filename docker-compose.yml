@@ -41,4 +41,3 @@ volumes:
 
 networks:
   dnd5e_network:
-    driver: bridge

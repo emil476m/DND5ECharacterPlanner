@@ -1,8 +1,8 @@
 using Core.Enums;
 
-namespace api.TransferModels.Items;
+namespace Core.Models.Items;
 
-public class WondrousItemDto : ItemDto
+public class WondrousItemModel : ItemModel
 {
     public Rarity Rarity { get; set; }
     public bool RequiresAttunement { get; set; }

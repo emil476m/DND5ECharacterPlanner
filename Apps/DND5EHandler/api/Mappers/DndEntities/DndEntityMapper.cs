@@ -1,11 +1,11 @@
 using api.TransferModels.DndEntities;
-using Domain.Models;
+using Core.Models;
 
-namespace api.Mappers.DndEntities;
+namespace api.Mappers;
 
 public static class DndEntityMapper
 {
-    // Domain -> Simple Model
+    // Core -> Simple Model
     public static DndEntitySimpleModel ToDndEntitySimpleModel(this DndEntityModel entityModel)
     {
         if (entityModel is null) throw new ArgumentNullException(nameof(entityModel));
@@ -44,7 +44,7 @@ public static class DndEntityMapper
         };
     }
     
-    // Domain -> Simple DTO
+    // Core -> Simple DTO
     public static DndEntitySimpleDto ToDndEntitySimpleDto(this DndEntityModel entityModel)
     {
         if (entityModel is null) throw new ArgumentNullException(nameof(entityModel));
@@ -57,7 +57,7 @@ public static class DndEntityMapper
         };
     }
     
-    // Domain -> Full DTO
+    // Core -> Full DTO
     public static DndEntityDto ToDndEntityDto(this DndEntityModel entityModel)
     {
         if (entityModel is null) throw new ArgumentNullException(nameof(entityModel));

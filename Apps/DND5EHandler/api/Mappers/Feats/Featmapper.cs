@@ -1,8 +1,8 @@
 using api.TransferModels.Feats;
-using Domain.Enums;
-using Domain.Models.Feats;
+using Core.Enums;
+using Core.Models.Feats;
 
-namespace api.Mappers.Feats;
+namespace api.Mappers;
 
 public static class FeatMapper
 {

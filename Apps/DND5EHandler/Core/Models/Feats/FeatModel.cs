@@ -1,12 +1,10 @@
-
-
-using api.TransferModels.DndEntities;
 using Core.Models.Miscellaneous;
 
-namespace api.TransferModels.Feats;
+namespace Core.Models.Feats;
 
-public class FeatDto : DndEntityDto
+public class FeatModel : DndEntityModel
 {
+    
     public string Effect { get; set; } = String.Empty;
     public List<ChoiceModel<string>>? EffectChoices { get; set; } = new();
     

@@ -1,9 +1,10 @@
 using Core.Enums;
 
-namespace api.TransferModels.DndEntities;
+namespace Core.Models;
 
-public class DndEntityCreateDto
+public class DndEntitySimpleModel
 {
+    public Guid Id { get; set; }
     public string Name { get; set; }
     public bool IsPublic { get; set; }
     public RuleSet UsedRuleset { get; set; } 

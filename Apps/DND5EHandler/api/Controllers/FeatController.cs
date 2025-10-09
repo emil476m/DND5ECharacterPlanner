@@ -1,14 +1,11 @@
-using api.Mappers.DndEntities;
-using api.Mappers.Feats;
-using api.Mappers.Generic;
+using api.Mappers;
 using api.TransferModels.DndEntities;
 using api.TransferModels.Feats;
 using api.TransferModels.GenericDto;
-using Domain.Models;
-using Domain.Models.Feats;
+using Core.Interfaces;
+using Core.Models;
+using Core.Models.Feats;
 using Microsoft.AspNetCore.Mvc;
-using service.Implementation;
-using service.Interfaces;
 
 namespace api.Controllers;
 

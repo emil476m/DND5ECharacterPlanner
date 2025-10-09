@@ -1,6 +1,6 @@
 using api.TransferModels.GenericDto;
 
-namespace api.Mappers.Generic;
+namespace api.Mappers;
 
 public static class ResponseMappers
 {

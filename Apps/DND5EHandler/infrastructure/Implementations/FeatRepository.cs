@@ -1,9 +1,9 @@
 using Dapper;
-using Domain.Enums;
-using Domain.Models;
-using Domain.Models.Feats;
-using Domain.Models.Miscellaneous;
-using infrastructure.Interfaces;
+using Core.Enums;
+using Core.Interfaces;
+using Core.Models;
+using Core.Models.Feats;
+using Core.Models.Miscellaneous;
 using infrastructure.Mappers;
 using infrastructure.Models.Feats;
 using Npgsql;

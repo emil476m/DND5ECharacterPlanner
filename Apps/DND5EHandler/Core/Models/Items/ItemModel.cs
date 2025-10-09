@@ -1,10 +1,9 @@
-using api.TransferModels.DndEntities;
 using Core.Enums;
 using Core.Models.Miscellaneous;
 
-namespace api.TransferModels.Items;
+namespace Core.Models.Items;
 
-public class ItemDto : DndEntityDto
+public abstract class ItemModel : DndEntityModel
 {
     public ItemCategory Category { get; set; }
     public string Description { get; set; }
@@ -13,3 +12,4 @@ public class ItemDto : DndEntityDto
     
     public List<ProficiencyModel> RequiredProficiencies { get; set; } = new();
 }
+

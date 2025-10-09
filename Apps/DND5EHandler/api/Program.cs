@@ -1,21 +1,22 @@
-using Domain.Models.Feats;
+using Core.Interfaces;
+using Core.Models.Feats;
+using Core.Service.Implementation;
 using infrastructure.Implementations;
-using infrastructure.Interfaces;
-using service.Implementation;
-using service.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
+
 builder.Services.AddNpgsqlDataSource(Environment.GetEnvironmentVariable("pgconn")!,
     dataSourceBuilder => dataSourceBuilder.EnableParameterLogging());
 
-builder.Services.AddScoped<IService<FeatModel>, FeatService>();
 builder.Services.AddScoped<IRepository<FeatModel>, FeatRepository>();
+builder.Services.AddScoped<IService<FeatModel>, FeatService>();
 
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 

@@ -1,6 +1,9 @@
-using Domain.Models.Items;
+using System.Text.Json;
+using api.TransferModels.Items;
+using Core.Enums;
+using Core.Interfaces;
+using Core.Models.Items;
 using Microsoft.AspNetCore.Mvc;
-using service.Interfaces;
 
 namespace api.Controllers;
 [ApiController]
@@ -42,7 +45,8 @@ public class ItemController : ControllerBase
     }
 
     // Create Endpoints
-    
+
+
     [HttpPost("Armor")]
     public async Task<ActionResult<ItemModel>> CreateArmorAsync([FromBody] ArmorModel armor)
     {
