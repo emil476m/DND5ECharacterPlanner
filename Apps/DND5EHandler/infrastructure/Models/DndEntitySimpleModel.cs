@@ -2,7 +2,7 @@ using infrastructure.Models.Miscellaneous.Enums;
 
 namespace infrastructure.Models;
 
-public class SimpelDndEntityModel
+public class DndEntitySimpleModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

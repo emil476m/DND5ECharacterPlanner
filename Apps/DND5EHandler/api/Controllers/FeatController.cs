@@ -1,3 +1,9 @@
+using api.Mappers.DndEntities;
+using api.Mappers.Feats;
+using api.Mappers.Generic;
+using api.TransferModels.DndEntities;
+using api.TransferModels.Feats;
+using api.TransferModels.GenericDto;
 using infrastructure.Models;
 using infrastructure.Models.Feats;
 using Microsoft.AspNetCore.Mvc;
@@ -11,21 +17,22 @@ namespace api.Controllers;
 public class FeatController : ControllerBase
 {
     
-    private readonly IService<FeatModel , FeatCreateModelDto> _featService;
+    private readonly IService<FeatModel> _featService;
 
-    public FeatController(IService<FeatModel , FeatCreateModelDto> featService)
+    public FeatController(IService<FeatModel> featService)
     {
         _featService = featService;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateFeat([FromBody] FeatCreateModelDto item)
+    public async Task<IActionResult> CreateFeat([FromBody] FeatCreateDto item)
     {
         if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
         
-        FeatModel result = await _featService.Create(item);
+        FeatModel result = await _featService.Create(item.ToFeatModel());
+        ResponseDto response = result.ToFeatDto().ToResponseDto("Created Feat");
         
-        return result != null ? Ok(result) : NotFound();
+        return response != null ? Ok(response) : NotFound();
     }
     
     [HttpDelete]
@@ -34,18 +41,19 @@ public class FeatController : ControllerBase
         if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
 
         bool result = await _featService.Delete(id);
-        
-        return result != null ? Ok(result) : NotFound();
+        ReturnBoolDto response = result.ToReturnedBoolDto();
+        return response != null ? Ok(response) : NotFound();
     }
     
     [HttpPut]
-    public async Task<IActionResult> UpdateFeat([FromBody] FeatCreateModelDto item, Guid id)
+    public async Task<IActionResult> UpdateFeat([FromBody] FeatCreateDto item, Guid id)
     {
         if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
         
-        FeatModel result = await _featService.Update(id, item);
+        FeatModel result = await _featService.Update(id, item.ToFeatModel());
+        ResponseDto response = result.ToFeatDto().ToResponseDto("Updated Feat");
         
-        return result != null ? Ok(result) : NotFound();
+        return response != null ? Ok(response) : NotFound();
     }
     
     [HttpGet]
@@ -55,17 +63,17 @@ public class FeatController : ControllerBase
         if (string.IsNullOrEmpty(featId.ToString())) return BadRequest();
         
         FeatModel result = await _featService.GetResult(featId);
-        
-        return result != null ? Ok(result) : NotFound();
+        FeatDto response = result.ToFeatDto();
+        return response != null ? Ok(response) : NotFound();
     }
     
     [HttpGet]
     [Route("Feat/SimpleList")]
     public async Task<IActionResult> GetSimpleFeatList()
     {
-        IEnumerable<SimpelEntityDto> result = await _featService.GetSimpleList();
-        
-        return result != null ? Ok(result) : NotFound();
+        IEnumerable<DndEntitySimpleModel> result = await _featService.GetSimpleList();
+        IEnumerable<DndEntitySimpleDto> response = result.Select(x => x.ToDndEntitySimpleDto());
+        return response != null ? Ok(response) : NotFound();
     }
     
     [HttpGet]
@@ -74,7 +82,9 @@ public class FeatController : ControllerBase
     {
         IEnumerable<FeatModel> result = await _featService.GetDetailedList();
         
-        return result != null ? Ok(result) : NotFound();
+        IEnumerable<FeatDto> response = result.Select(x => x.ToFeatDto());
+        
+        return response != null ? Ok(response) : NotFound();
     }
     
 }

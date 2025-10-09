@@ -6,7 +6,7 @@ public interface IRepository<T> where T : class
 {
     Task<T> GetResult(Guid id);
     
-    Task<IEnumerable<SimpelDndEntityModel>> GetSimpleList();
+    Task<IEnumerable<DndEntitySimpleModel>> GetSimpleList();
     
     Task<IEnumerable<T>> GetDetailedList();
     

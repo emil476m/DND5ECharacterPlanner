@@ -6,7 +6,7 @@ public interface IService<T>
 {
     Task<T> GetResult(Guid id);
     
-    Task <IEnumerable<SimpelDndEntityModel>> GetSimpleList();
+    Task <IEnumerable<DndEntitySimpleModel>> GetSimpleList();
     
     Task<IEnumerable<T>> GetDetailedList();
     
