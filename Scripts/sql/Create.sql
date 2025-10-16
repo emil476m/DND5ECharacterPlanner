@@ -50,11 +50,11 @@ CREATE TABLE choice_option (
 -- Base item table
 CREATE TABLE IF NOT EXISTS item (
     id UUID PRIMARY KEY REFERENCES dnd_entity(id) ON DELETE CASCADE,
-    item_category VARCHAR(60) NOT NULL,  -- 'ArmorAndShields', 'Weapon', ...
+    item_category INTEGER NOT NULL,  -- 'ArmorAndShields' = 1, 'Weapon' = 3, ...
     description TEXT NULL,
     weight NUMERIC(8,2) NULL,
-    cost TEXT NULL
-);
+    cost INTEGER NULL
+    );
 
 -- Armor
 CREATE TABLE IF NOT EXISTS armor (
@@ -102,4 +102,22 @@ CREATE TABLE IF NOT EXISTS wondrous_item (
 CREATE TABLE IF NOT EXISTS adventuring_gear (
     id UUID PRIMARY KEY REFERENCES item(id) ON DELETE CASCADE,
     gear_type VARCHAR(100) NULL -- e.g. 'rope', 'torch', etc.
+);
+
+
+----------------------------------------------------------------------------------------------------
+---------------------------Profficiencies--------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+--Profficiencies
+CREATE TABLE IF NOT EXISTS proficiency (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- Junction table for many-to-many relationship between dnd_entity and proficiency
+CREATE TABLE IF NOT EXISTS entity_proficiency (
+    entity_id UUID NOT NULL REFERENCES dnd_entity(id) ON DELETE CASCADE,
+    proficiency_id UUID NOT NULL REFERENCES proficiency(id),
+    PRIMARY KEY (entity_id, proficiency_id)
 );
