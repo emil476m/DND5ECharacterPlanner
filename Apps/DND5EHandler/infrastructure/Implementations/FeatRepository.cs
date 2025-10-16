@@ -4,8 +4,8 @@ using Core.Interfaces;
 using Core.Models;
 using Core.Models.Feats;
 using Core.Models.Miscellaneous;
+using infrastructure.DatabaseModels.Feats;
 using infrastructure.Mappers;
-using infrastructure.Models.Feats;
 using Npgsql;
 
 namespace infrastructure.Implementations;

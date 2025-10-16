@@ -1,5 +1,5 @@
 using Core.Models.Feats;
-using infrastructure.Models.Feats;
+using infrastructure.DatabaseModels.Feats;
 
 namespace infrastructure.Mappers;
 

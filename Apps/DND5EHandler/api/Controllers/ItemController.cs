@@ -1,4 +1,5 @@
 using System.Text.Json;
+using api.Mappers.Items;
 using api.TransferModels.Items;
 using Core.Enums;
 using Core.Interfaces;
@@ -25,14 +26,15 @@ public class ItemController : ControllerBase
     public async Task<IActionResult> GetAllAsync()
     {
         var result = await _itemService.GetAllItems();
-        return Ok(result);
+        var responseDto = result.Select(x => x.ToItemDto());
+        return Ok(responseDto);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetByIdAsync(Guid id)
     {
         var result = await _itemService.GetItemById(id);
-        return result != null ? Ok(result) : NotFound();
+        return result != null ? Ok(result.ToItemDto()) : NotFound();
     }
     
     // Delete item by id
