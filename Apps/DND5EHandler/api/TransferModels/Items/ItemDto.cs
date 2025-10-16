@@ -1,9 +1,13 @@
+using System.Text.Json.Serialization;
 using api.TransferModels.DndEntities;
 using Core.Enums;
 using Core.Models.Miscellaneous;
 
 namespace api.TransferModels.Items;
 
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(ArmorDto), (int)ItemCategory.ArmorAndShields)]
+[JsonDerivedType(typeof(CurrencyDto), (int)ItemCategory.Currency)]
 public class ItemDto : DndEntityDto
 {
     public ItemCategory Category { get; set; }

@@ -1,9 +1,8 @@
-using Core.Models;
 using Core.Models.Miscellaneous;
 
-namespace infrastructure.Models.Feats;
+namespace infrastructure.DatabaseModels.Feats;
 
-public class FeatDbModel : DndEntityModel
+public class FeatDbModel : DndEntityDbModel
 {
     public string Effect { get; set; }
     public List<ChoiceModel<string>>? EffectChoices { get; set; } = new();
