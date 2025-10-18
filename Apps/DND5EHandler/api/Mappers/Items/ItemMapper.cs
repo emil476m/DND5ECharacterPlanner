@@ -34,12 +34,10 @@ public static class ItemMapper
             Description = model.Description,
             Weight = model.Weight,
             CostInGold = model.CostInGold,
-            RequiredProficiencies = model.RequiredProficiencies,
+            RequiredProficiency = model.RequiredProficiency,
             // Armor
             ArmorClass = model.ArmorClass,
             MaxDexBonus = model.MaxDexBonus,
-            RequiresProficiency = model.RequiresProficiency,
-            ProficiencyType = model.ProficiencyType,
             StrengthRequirement = model.StrengthRequirement,
             IsShield = model.IsShield,
             StealthDisadvantage = model.StealthDisadvantage
@@ -64,7 +62,7 @@ public static class ItemMapper
             Description = model.Description,
             Weight = model.Weight,
             CostInGold = model.CostInGold,
-            RequiredProficiencies = model.RequiredProficiencies,
+            RequiredProficiency = model.RequiredProficiency,
             // Currency
             Denomination = model.Denomination,
             Amount = model.Amount
@@ -89,7 +87,7 @@ public static class ItemMapper
             Description = model.Description,
             Weight = model.Weight,
             CostInGold = model.CostInGold,
-            RequiredProficiencies = model.RequiredProficiencies,
+            RequiredProficiency = model.RequiredProficiency,
             // Weapon
             Damage = model.Damage,
             DamageType = model.DamageType,

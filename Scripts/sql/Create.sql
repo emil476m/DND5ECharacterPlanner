@@ -43,6 +43,16 @@ CREATE TABLE choice_option (
 );
 
 ----------------------------------------------------------------------------------------------------
+---------------------------Profficiencies--------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+--Profficiencies
+CREATE TABLE IF NOT EXISTS proficiency (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+    );
+
+----------------------------------------------------------------------------------------------------
 ---------------------------Items--------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
@@ -52,6 +62,7 @@ CREATE TABLE IF NOT EXISTS item (
     id UUID PRIMARY KEY REFERENCES dnd_entity(id) ON DELETE CASCADE,
     item_category INTEGER NOT NULL,  -- 'ArmorAndShields' = 1, 'Weapon' = 3, ...
     description TEXT NULL,
+    proficiency UUID NULL REFERENCES proficiency(id),
     weight NUMERIC(8,2) NULL,
     cost INTEGER NULL
     );
@@ -60,9 +71,7 @@ CREATE TABLE IF NOT EXISTS item (
 CREATE TABLE IF NOT EXISTS armor (
     id UUID PRIMARY KEY REFERENCES item(id) ON DELETE CASCADE,
     armor_class INT NOT NULL,
-    max_dex_bonus INT NOT NULL,
-    requires_proficiency BOOLEAN NOT NULL DEFAULT FALSE,
-    proficiency_type VARCHAR(100),
+    max_dex_bonus INT NULL,
     strength_requirement INT NOT NULL,
     is_shield BOOLEAN NOT NULL DEFAULT FALSE,
     stealth_disadvantage BOOLEAN NOT NULL DEFAULT FALSE
@@ -76,12 +85,6 @@ CREATE TABLE IF NOT EXISTS weapon (
     weapon_type VARCHAR(100) NOT NULL,
     properties VARCHAR(255) NULL,
     range INT NOT NULL
-);
-
--- Tool
-CREATE TABLE IF NOT EXISTS tool (
-    id UUID PRIMARY KEY REFERENCES item(id) ON DELETE CASCADE,
-    tool_type VARCHAR(100) NOT NULL -- e.g. 'ThievesTools', 'SmithTools'
 );
 
 -- Currency
@@ -105,19 +108,4 @@ CREATE TABLE IF NOT EXISTS adventuring_gear (
 );
 
 
-----------------------------------------------------------------------------------------------------
----------------------------Profficiencies--------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------
 
---Profficiencies
-CREATE TABLE IF NOT EXISTS proficiency (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
-);
-
--- Junction table for many-to-many relationship between dnd_entity and proficiency
-CREATE TABLE IF NOT EXISTS entity_proficiency (
-    entity_id UUID NOT NULL REFERENCES dnd_entity(id) ON DELETE CASCADE,
-    proficiency_id UUID NOT NULL REFERENCES proficiency(id),
-    PRIMARY KEY (entity_id, proficiency_id)
-);

@@ -1,6 +1,7 @@
 using Core.Enums;
 using Core.Interfaces;
 using Core.Models.Items;
+using Core.Models.Miscellaneous;
 using Dapper;
 using infrastructure.DatabaseModels.Items;
 using infrastructure.Mappers;
@@ -38,13 +39,24 @@ public class ItemRepository : IItemRepository
                i.item_category AS {nameof(ItemDbModel.Category)}, 
                i.description AS {nameof(ItemDbModel.Description)}, 
                i.weight AS {nameof(ItemDbModel.Weight)}, 
-               i.cost AS {nameof(ItemDbModel.CostInGold)}
+               i.cost AS {nameof(ItemDbModel.CostInGold)},
+               p.id AS {nameof(ProficiencyModel.Id)},
+               p.name AS {nameof(ProficiencyModel.Name)}
         FROM dnd_entity e
         JOIN item i ON e.id = i.id
+        LEFT JOIN proficiency p ON i.proficiency = p.id
         WHERE e.entity_type = @EntityType;";
 
-        var baseItems =
-            (await conn.QueryAsync<ItemDbModel>(sqlBase, new { EntityType = EntityType.Item })).ToDictionary(i => i.Id);
+        var baseItems = (await conn.QueryAsync<ItemDbModel, ProficiencyModel, ItemDbModel>(
+            sqlBase,
+            (item, proficiency) =>
+            {
+                item.RequiredProficiency = proficiency;
+                return item;
+            },
+            new { EntityType = EntityType.Item },
+            splitOn: nameof(ProficiencyModel.Id)
+        )).ToDictionary(i => i.Id);
         
         if (baseItems.Count == 0)
             return [];
@@ -67,9 +79,7 @@ public class ItemRepository : IItemRepository
         await AddSubItemsAsync<ArmorDbModel>(@$"SELECT 
                                                     id AS {nameof(ArmorDbModel.Id)},
                                                     armor_class AS {nameof(ArmorDbModel.ArmorClass)},
-                                                    max_dex_bonus AS {nameof(ArmorDbModel.MaxDexBonus)}, 
-                                                    requires_proficiency AS {nameof(ArmorDbModel.RequiresProficiency)},    
-                                                    proficiency_type AS {nameof(ArmorDbModel.ProficiencyType)}, 
+                                                    max_dex_bonus AS {nameof(ArmorDbModel.MaxDexBonus)},
                                                     strength_requirement AS {nameof(ArmorDbModel.StrengthRequirement)},   
                                                     is_shield AS {nameof(ArmorDbModel.IsShield)},    
                                                     stealth_disadvantage AS {nameof(ArmorDbModel.StealthDisadvantage)}
@@ -90,6 +100,15 @@ public class ItemRepository : IItemRepository
                                                       range AS {nameof(WeaponDbModel.Range)}
                                                       FROM weapon;
                                                       ", db => db.Id, (db, baseItem) => db.ToWeaponModel(baseItem));
+
+        // Adds leftover base items, with no subtype
+        foreach (var remaining in baseItems.Values)
+        {
+            if (!results.Any(r => r.Id == remaining.Id))
+            {
+                results.Add(remaining.ToItemModel());
+            }
+        }
         
         return results;
     }

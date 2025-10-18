@@ -5,6 +5,28 @@ namespace infrastructure.Mappers;
 
 public static class ItemMapper
 {
+    public static ItemModel ToItemModel(this ItemDbModel dbModel)
+    {
+        return new ArmorModel
+        {
+            //Entity properties
+            Id = dbModel.Id,
+            Name = dbModel.Name,
+            IsPublic = dbModel.IsPublic,
+            IsOfficial = dbModel.IsOfficial,
+            CreatedByUserId = dbModel.CreatedByUserId,
+            CreatedAt = dbModel.CreatedAt,
+            UsedRuleset = dbModel.UsedRuleset,
+            Type = dbModel.Type,
+            //Item properties
+            Category = dbModel.Category,
+            Description = dbModel.Description,
+            Weight = dbModel.Weight,
+            CostInGold = dbModel.CostInGold,
+            RequiredProficiency = dbModel.RequiredProficiency,
+        };
+    }
+    
     public static ArmorModel ToArmorModel(this ArmorDbModel armorModel, ItemDbModel dbModel)
     {
         return new ArmorModel
@@ -23,12 +45,10 @@ public static class ItemMapper
             Description = dbModel.Description,
             Weight = dbModel.Weight,
             CostInGold = dbModel.CostInGold,
-            RequiredProficiencies = dbModel.RequiredProficiencies,
+            RequiredProficiency = dbModel.RequiredProficiency,
             //Armor properties
             ArmorClass = armorModel.ArmorClass,
             MaxDexBonus = armorModel.MaxDexBonus,
-            RequiresProficiency = armorModel.RequiresProficiency,
-            ProficiencyType = armorModel.ProficiencyType,
             StrengthRequirement = armorModel.StrengthRequirement,
             IsShield = armorModel.IsShield,
             StealthDisadvantage = armorModel.StealthDisadvantage,
@@ -53,12 +73,10 @@ public static class ItemMapper
             Description = dbModel.Description,
             Weight = dbModel.Weight,
             CostInGold = dbModel.CostInGold,
-            RequiredProficiencies = dbModel.RequiredProficiencies,
+            RequiredProficiency = dbModel.RequiredProficiency,
             //Armor properties
             ArmorClass = dbModel.ArmorClass,
             MaxDexBonus = dbModel.MaxDexBonus,
-            RequiresProficiency = dbModel.RequiresProficiency,
-            ProficiencyType = dbModel.ProficiencyType,
             StrengthRequirement = dbModel.StrengthRequirement,
             IsShield = dbModel.IsShield,
             StealthDisadvantage = dbModel.StealthDisadvantage,
@@ -83,7 +101,7 @@ public static class ItemMapper
             Description = dbModel.Description,
             Weight = dbModel.Weight,
             CostInGold = dbModel.CostInGold,
-            RequiredProficiencies = dbModel.RequiredProficiencies,
+            RequiredProficiency = dbModel.RequiredProficiency,
             //Currency properties
             Denomination = currencyModel.Denomination,
             Amount = currencyModel.Amount,
@@ -108,7 +126,7 @@ public static class ItemMapper
             Description = dbModel.Description,
             Weight = dbModel.Weight,
             CostInGold = dbModel.CostInGold,
-            RequiredProficiencies = dbModel.RequiredProficiencies,
+            RequiredProficiency = dbModel.RequiredProficiency,
             //Weapon properties
             Damage = weaponModel.Damage,
             DamageType = weaponModel.DamageType,

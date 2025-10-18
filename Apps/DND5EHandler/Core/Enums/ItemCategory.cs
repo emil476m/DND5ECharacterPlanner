@@ -4,13 +4,17 @@ public enum ItemCategory
 {
     AdventuringGear,
     ArmorAndShields,
-    Trinket,
+    Potion,
     Weapon,
-    Firearm,
+    Scroll,
     Explosive,
     WondrousItem,
     Currency,
     Poison,
     Tool,
-    SiegeEquipment
+    SiegeEquipment,
+    MountAndVehicle,
+    TradeGood,
+    FoodAndDrink,
+    Other
 }
