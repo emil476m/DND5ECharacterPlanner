@@ -81,6 +81,16 @@ public class ItemRepository : IItemRepository
                                                         amount AS {nameof(CurrencyDbModel.Amount)}
                                                         FROM currency;", db => db.Id, (db, baseItem) => db.ToCurrencyModel(baseItem));
         
+        await AddSubItemsAsync<WeaponDbModel>($@"SELECT
+                                                      id AS {nameof(WeaponDbModel.Id)},
+                                                      damage AS {nameof(WeaponDbModel.Damage)},
+                                                      damage_type AS {nameof(WeaponDbModel.DamageType)},
+                                                      weapon_type AS {nameof(WeaponDbModel.WeaponType)},
+                                                      properties AS {nameof(WeaponDbModel.Properties)},
+                                                      range AS {nameof(WeaponDbModel.Range)}
+                                                      FROM weapon;
+                                                      ", db => db.Id, (db, baseItem) => db.ToWeaponModel(baseItem));
+        
         return results;
     }
     

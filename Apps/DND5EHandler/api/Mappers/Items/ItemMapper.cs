@@ -10,14 +10,15 @@ public static class ItemMapper
         return model switch
         {
             ArmorModel a => a.ToArmorDto(),
-            CurrencyModel c => c.ToCurrencyDto(), 
+            CurrencyModel c => c.ToCurrencyDto(),
+            WeaponModel w => w.ToWeaponDto(),
             _ => throw new NotSupportedException($"Unsupported item subtype: {model.GetType().Name}")
         };
     }
 
     public static ArmorDto ToArmorDto(this ArmorModel model)
     {
-        return new ArmorDto()
+        return new ArmorDto
         {
             // DndEntity
             Id = model.Id,
@@ -47,7 +48,7 @@ public static class ItemMapper
 
     public static CurrencyDto ToCurrencyDto(this CurrencyModel model)
     {
-        return new CurrencyDto()
+        return new CurrencyDto
         {
             // DndEntity
             Id = model.Id,
@@ -67,6 +68,34 @@ public static class ItemMapper
             // Currency
             Denomination = model.Denomination,
             Amount = model.Amount
+        };
+    }
+    
+    public static WeaponDto ToWeaponDto(this WeaponModel model)
+    {
+        return new WeaponDto
+        {
+            // DndEntity
+            Id = model.Id,
+            Name = model.Name,
+            IsPublic = model.IsPublic,
+            IsOfficial = model.IsOfficial,
+            CreatedByUserId = model.CreatedByUserId,
+            CreatedAt = model.CreatedAt,
+            UsedRuleset = model.UsedRuleset,
+            Type = model.Type,
+            // Item
+            Category = model.Category,
+            Description = model.Description,
+            Weight = model.Weight,
+            CostInGold = model.CostInGold,
+            RequiredProficiencies = model.RequiredProficiencies,
+            // Weapon
+            Damage = model.Damage,
+            DamageType = model.DamageType,
+            WeaponType = model.WeaponType,
+            Properties = model.Properties,
+            Range = model.Range,
         };
     }
 }

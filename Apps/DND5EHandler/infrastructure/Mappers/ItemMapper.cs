@@ -84,9 +84,37 @@ public static class ItemMapper
             Weight = dbModel.Weight,
             CostInGold = dbModel.CostInGold,
             RequiredProficiencies = dbModel.RequiredProficiencies,
-            //Armor properties
+            //Currency properties
             Denomination = currencyModel.Denomination,
             Amount = currencyModel.Amount,
+        };
+    }
+    
+    public static WeaponModel ToWeaponModel(this WeaponDbModel weaponModel, ItemDbModel dbModel)
+    {
+        return new WeaponModel
+        {
+            //Entity properties
+            Id = dbModel.Id,
+            Name = dbModel.Name,
+            IsPublic = dbModel.IsPublic,
+            IsOfficial = dbModel.IsOfficial,
+            CreatedByUserId = dbModel.CreatedByUserId,
+            CreatedAt = dbModel.CreatedAt,
+            UsedRuleset = dbModel.UsedRuleset,
+            Type = dbModel.Type,
+            //Item properties
+            Category = dbModel.Category,
+            Description = dbModel.Description,
+            Weight = dbModel.Weight,
+            CostInGold = dbModel.CostInGold,
+            RequiredProficiencies = dbModel.RequiredProficiencies,
+            //Weapon properties
+            Damage = weaponModel.Damage,
+            DamageType = weaponModel.DamageType,
+            WeaponType = weaponModel.WeaponType,
+            Properties = weaponModel.Properties,
+            Range = weaponModel.Range,
         };
     }
 }
