@@ -1,21 +1,29 @@
+using System.Text.Json.Serialization;
+using Core.Interfaces;
+using Core.Models.Feats;
+using Core.Service.Implementation;
 using infrastructure.Implementations;
-using infrastructure.Interfaces;
-using infrastructure.Models.Feats;
-using service.Implementation;
-using service.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
 builder.Services.AddNpgsqlDataSource(Environment.GetEnvironmentVariable("pgconn")!,
     dataSourceBuilder => dataSourceBuilder.EnableParameterLogging());
 
-builder.Services.AddScoped<IService<FeatModel , FeatCreateModelDto>, FeatService>();
 builder.Services.AddScoped<IRepository<FeatModel>, FeatRepository>();
+builder.Services.AddScoped<IService<FeatModel>, FeatService>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IItemService, ItemService>();
 
+builder.Services.AddControllers().AddJsonOptions(o =>
+{
+    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 

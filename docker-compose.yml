@@ -7,6 +7,8 @@ services:
     #restart: always
     volumes:
       - pgdatadnd5e:/var/lib/postgresql/data
+      - ./Scripts/shell/sql-set-up.sh:/docker-entrypoint-initdb.d/sql-set-up.sh
+      - ./Scripts/sql:/Scripts/sql
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
@@ -17,7 +19,7 @@ services:
       #jdbc:postgresql://localhost:5001/DND5EDb?user=postgres&password=postgres
     networks:
       - dnd5e_network
-      
+  
   dnd5ehandler:
     #restart: always
     build:
@@ -33,12 +35,11 @@ services:
       - database
     networks:
       - dnd5e_network
-    
-        
-  
+
+
+
 volumes:
   pgdatadnd5e:
 
 networks:
   dnd5e_network:
-    driver: bridge
