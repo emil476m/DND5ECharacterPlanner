@@ -249,8 +249,7 @@ public class FeatRepository : IRepository<FeatModel>
         NpgsqlTransaction transaction)
     {
         if (item.AbilityScoreIncreases == null || !item.AbilityScoreIncreases.Any()) return;
-
-        Console.WriteLine("Found AbilityScoreIncreases trying to save to database");
+        
 
         var sql =
             "INSERT INTO ability_score_increase (entity_id, ability, amount) VALUES (@EntityId, @Ability, @Amount);";
