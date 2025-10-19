@@ -1,18 +1,15 @@
-
-
 using Core.Interfaces;
 using Core.Models.Items;
 
 public class ItemService : IItemService
 {
-    
     private readonly IItemRepository _itemRepository;
-    
+
     public ItemService(IItemRepository itemRepository)
     {
         _itemRepository = itemRepository;
     }
-    
+
     public Task<IEnumerable<ItemModel>> GetAllItems()
     {
         return _itemRepository.GetAllItems();

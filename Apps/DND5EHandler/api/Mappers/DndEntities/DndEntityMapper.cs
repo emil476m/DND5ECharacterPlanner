@@ -17,7 +17,7 @@ public static class DndEntityMapper
             UsedRuleset = entityModel.UsedRuleset
         };
     }
-    
+
     // Full DTO -> Simple Model
     public static DndEntitySimpleModel ToDndEntitySimpleModel(this DndEntityDto dto)
     {
@@ -30,7 +30,7 @@ public static class DndEntityMapper
             UsedRuleset = dto.UsedRuleset
         };
     }
-    
+
     // Simple Model -> Simple DTO
     public static DndEntitySimpleDto ToDndEntitySimpleDto(this DndEntitySimpleModel model)
     {
@@ -43,7 +43,7 @@ public static class DndEntityMapper
             UsedRuleset = model.UsedRuleset
         };
     }
-    
+
     // Core -> Simple DTO
     public static DndEntitySimpleDto ToDndEntitySimpleDto(this DndEntityModel entityModel)
     {
@@ -56,7 +56,7 @@ public static class DndEntityMapper
             UsedRuleset = entityModel.UsedRuleset
         };
     }
-    
+
     // Core -> Full DTO
     public static DndEntityDto ToDndEntityDto(this DndEntityModel entityModel)
     {
@@ -73,5 +73,4 @@ public static class DndEntityMapper
             Type = entityModel.Type
         };
     }
-    
 }

@@ -7,7 +7,6 @@ using infrastructure.Implementations;
 var builder = WebApplication.CreateBuilder(args);
 
 
-
 builder.Services.AddNpgsqlDataSource(Environment.GetEnvironmentVariable("pgconn")!,
     dataSourceBuilder => dataSourceBuilder.EnableParameterLogging());
 
@@ -16,7 +15,10 @@ builder.Services.AddScoped<IService<FeatModel>, FeatService>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IItemService, ItemService>();
 
-builder.Services.AddControllers().AddJsonOptions(o => { o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+builder.Services.AddControllers().AddJsonOptions(o =>
+{
+    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

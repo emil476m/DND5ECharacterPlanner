@@ -1,27 +1,24 @@
-using System.Text.Json;
 using api.Mappers.Items;
-using api.TransferModels.Items;
-using Core.Enums;
 using Core.Interfaces;
 using Core.Models.Items;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
 public class ItemController : ControllerBase
 {
-    
     private readonly IItemService _itemService;
 
     public ItemController(IItemService itemService)
     {
-       _itemService = itemService;
+        _itemService = itemService;
     }
 
     // Read Endpoints
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
@@ -36,9 +33,9 @@ public class ItemController : ControllerBase
         var result = await _itemService.GetItemById(id);
         return result != null ? Ok(result.ToItemDto()) : NotFound();
     }
-    
+
     // Delete item by id
-    
+
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteItemAsync(Guid id)
     {
@@ -53,7 +50,8 @@ public class ItemController : ControllerBase
     public async Task<ActionResult<ItemModel>> CreateArmorAsync([FromBody] ArmorModel armor)
     {
         var result = await _itemService.CreateArmor(armor);
-        return Ok(result.ToItemDto());;
+        return Ok(result.ToItemDto());
+        ;
     }
 
     [HttpPost("Weapon")]
@@ -67,7 +65,7 @@ public class ItemController : ControllerBase
     public async Task<ActionResult<ItemModel>> CreateGenericItemAsync([FromBody] GenericItemModel item)
     {
         //TODO: Create a create dto for all relevant endpoints
-        
+
         var result = await _itemService.CreateGenericItem(item);
         return Ok(result.ToItemDto());
     }
@@ -85,9 +83,9 @@ public class ItemController : ControllerBase
         var result = await _itemService.CreateWondrous(wondrous);
         return Ok(result.ToItemDto());
     }
-    
+
     // Update Endpoints
-    
+
     [HttpPut("Armor")]
     public async Task<ActionResult<ItemModel>> UpdateArmorAsync([FromBody] ArmorModel armor)
     {
@@ -121,7 +119,5 @@ public class ItemController : ControllerBase
     {
         var result = await _itemService.UpdateWondrous(wondrous);
         return Ok(result.ToItemDto());
-        
-        
     }
 }

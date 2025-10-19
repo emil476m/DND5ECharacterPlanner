@@ -1,7 +1,7 @@
 services:
   database:
     image: postgres
-    command:  -c 'max_connections=100'
+    command: -c 'max_connections=100'
     ports:
       - 5001:5432
     #restart: always
@@ -19,7 +19,7 @@ services:
       #jdbc:postgresql://localhost:5001/DND5EDb?user=postgres&password=postgres
     networks:
       - dnd5e_network
-      
+  
   dnd5ehandler:
     #restart: always
     build:
@@ -35,9 +35,9 @@ services:
       - database
     networks:
       - dnd5e_network
-    
-        
-  
+
+
+
 volumes:
   pgdatadnd5e:
 

@@ -11,5 +11,5 @@ public class SpellModel : DndEntityModel
     public string? Material { get; set; }
     public string Duration { get; set; }
     public string Description { get; set; }
-    public List<string> Classes  { get; set; } = new();
+    public List<string> Classes { get; set; } = new();
 }

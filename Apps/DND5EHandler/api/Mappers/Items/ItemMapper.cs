@@ -70,7 +70,7 @@ public static class ItemMapper
             Amount = model.Amount
         };
     }
-    
+
     public static WeaponDto ToWeaponDto(this WeaponModel model)
     {
         return new WeaponDto
@@ -95,10 +95,10 @@ public static class ItemMapper
             DamageType = model.DamageType,
             WeaponType = model.WeaponType,
             Properties = model.Properties,
-            Range = model.Range,
+            Range = model.Range
         };
     }
-    
+
     public static WondrousItemDto ToWondrousItemDto(this WondrousItemModel model)
     {
         return new WondrousItemDto
@@ -120,10 +120,10 @@ public static class ItemMapper
             RequiredProficiency = model.RequiredProficiency,
             // Weapon
             Rarity = model.Rarity,
-            RequiresAttunement = model.RequiresAttunement,
+            RequiresAttunement = model.RequiresAttunement
         };
     }
-    
+
     public static GenericItemDto ToGenericItemDto(this GenericItemModel dto)
     {
         return new GenericItemDto
@@ -142,7 +142,7 @@ public static class ItemMapper
             Description = dto.Description,
             Weight = dto.Weight,
             CostInGold = dto.CostInGold,
-            RequiredProficiency = dto.RequiredProficiency,
+            RequiredProficiency = dto.RequiredProficiency
         };
     }
 }

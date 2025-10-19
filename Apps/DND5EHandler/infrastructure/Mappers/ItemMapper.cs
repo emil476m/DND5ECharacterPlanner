@@ -23,10 +23,10 @@ public static class ItemMapper
             Description = dbModel.Description,
             Weight = dbModel.Weight,
             CostInGold = dbModel.CostInGold,
-            RequiredProficiency = dbModel.RequiredProficiency,
+            RequiredProficiency = dbModel.RequiredProficiency
         };
     }
-    
+
     public static ArmorModel ToArmorModel(this ArmorDbModel armorModel, ItemDbModel dbModel)
     {
         return new ArmorModel
@@ -51,10 +51,10 @@ public static class ItemMapper
             MaxDexBonus = armorModel.MaxDexBonus,
             StrengthRequirement = armorModel.StrengthRequirement,
             IsShield = armorModel.IsShield,
-            StealthDisadvantage = armorModel.StealthDisadvantage,
+            StealthDisadvantage = armorModel.StealthDisadvantage
         };
     }
-    
+
     public static ArmorDbModel ToArmorDbModel(this ArmorModel dbModel)
     {
         return new ArmorDbModel
@@ -79,10 +79,10 @@ public static class ItemMapper
             MaxDexBonus = dbModel.MaxDexBonus,
             StrengthRequirement = dbModel.StrengthRequirement,
             IsShield = dbModel.IsShield,
-            StealthDisadvantage = dbModel.StealthDisadvantage,
+            StealthDisadvantage = dbModel.StealthDisadvantage
         };
     }
-    
+
     public static CurrencyModel ToCurrencyModel(this CurrencyDbModel currencyModel, ItemDbModel dbModel)
     {
         return new CurrencyModel
@@ -104,10 +104,10 @@ public static class ItemMapper
             RequiredProficiency = dbModel.RequiredProficiency,
             //Currency properties
             Denomination = currencyModel.Denomination,
-            Amount = currencyModel.Amount,
+            Amount = currencyModel.Amount
         };
     }
-    
+
     public static WeaponModel ToWeaponModel(this WeaponDbModel weaponModel, ItemDbModel dbModel)
     {
         return new WeaponModel
@@ -132,11 +132,11 @@ public static class ItemMapper
             DamageType = weaponModel.DamageType,
             WeaponType = weaponModel.WeaponType,
             Properties = weaponModel.Properties,
-            Range = weaponModel.Range,
+            Range = weaponModel.Range
         };
     }
-    
-    public static WondrousItemModel ToWondrousItemModel(this WondrousItemDbModel WondrousItemModel, ItemDbModel dbModel)
+
+    public static WondrousItemModel ToWondrousItemModel(this WondrousItemDbModel wondrousItemModel, ItemDbModel dbModel)
     {
         return new WondrousItemModel
         {
@@ -155,9 +155,9 @@ public static class ItemMapper
             Weight = dbModel.Weight,
             CostInGold = dbModel.CostInGold,
             RequiredProficiency = dbModel.RequiredProficiency,
-            //Weapon properties
-            Rarity = WondrousItemModel.Rarity,
-            RequiresAttunement = WondrousItemModel.RequiresAttunement,
+            //Wondrous Item properties
+            Rarity = wondrousItemModel.Rarity,
+            RequiresAttunement = wondrousItemModel.RequiresAttunement
         };
     }
 }

@@ -11,14 +11,13 @@ namespace api.TransferModels.Items;
 [JsonDerivedType(typeof(CurrencyDto), (int)ItemCategory.Currency)]
 [JsonDerivedType(typeof(WeaponDto), (int)ItemCategory.Weapon)]
 [JsonDerivedType(typeof(WondrousItemDto), (int)ItemCategory.WondrousItem)]
-[JsonDerivedType(typeof(GenericItemDto), -1)]// -1 to catch all other categories not explicitly defined above
-
+[JsonDerivedType(typeof(GenericItemDto), -1)] // -1 to catch all other categories not explicitly defined above
 public class ItemDto : DndEntityDto
 {
     public ItemCategory Category { get; set; }
     public string Description { get; set; }
     public double Weight { get; set; }
     public int? CostInGold { get; set; }
-    
+
     public ProficiencyModel? RequiredProficiency { get; set; }
 }

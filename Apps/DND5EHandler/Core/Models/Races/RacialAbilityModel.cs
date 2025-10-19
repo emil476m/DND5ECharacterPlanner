@@ -8,7 +8,7 @@ public class RacialAbilityModel
     public string Description { get; set; } // rules text
 
     // --- Mechanics ---
-    public UsageLimitModel? UsageLimit { get; set; }   // optional (some traits are unlimited)
+    public UsageLimitModel? UsageLimit { get; set; } // optional (some traits are unlimited)
 
     // Ability Score bonuses (e.g., +2 DEX, +1 WIS)
     public List<AbilityScoreIncreaseModel> AbilityScoreIncreases { get; set; } = new();

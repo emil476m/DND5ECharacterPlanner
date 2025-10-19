@@ -10,6 +10,6 @@ public class DndEntityDbModel
     public bool IsOfficial { get; set; }
     public Guid? CreatedByUserId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public RuleSet UsedRuleset { get; set; } 
+    public RuleSet UsedRuleset { get; set; }
     public EntityType Type { get; set; }
 }

@@ -13,7 +13,7 @@ public interface IItemRepository
     Task<ItemModel> CreateGenericItem(ItemModel item);
     Task<ItemModel> CreateCurrency(CurrencyModel currency);
     Task<ItemModel> CreateWondrous(WondrousItemModel wondrous);
-    
+
     Task<ItemModel> UpdateArmor(ArmorModel armor);
     Task<ItemModel> UpdateWeapon(WeaponModel weapon);
     Task<ItemModel> UpdateGenericItem(ItemModel item);

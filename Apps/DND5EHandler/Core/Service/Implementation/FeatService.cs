@@ -1,5 +1,3 @@
-
-
 using Core.Enums;
 using Core.Interfaces;
 using Core.Models;
@@ -9,14 +7,13 @@ namespace Core.Service.Implementation;
 
 public class FeatService : IService<FeatModel>
 {
-    
     private readonly IRepository<FeatModel> _featRepository;
 
     public FeatService(IRepository<FeatModel> featRepository)
     {
         _featRepository = featRepository;
     }
-    
+
     public Task<FeatModel> GetResult(Guid id)
     {
         return _featRepository.GetResult(id);
@@ -51,15 +48,14 @@ public class FeatService : IService<FeatModel>
             Effect = item.Effect,
             EffectChoices = item.EffectChoices,
             AbilityScoreIncreaseChoices = item.AbilityScoreIncreaseChoices,
-            AbilityScoreIncreases = item.AbilityScoreIncreases,
+            AbilityScoreIncreases = item.AbilityScoreIncreases
         };
-        
+
         return _featRepository.Create(feat);
     }
 
     public Task<FeatModel> Update(Guid id, FeatModel item)
     {
-        
         var feat = new FeatModel
         {
             Id = id,
@@ -72,9 +68,9 @@ public class FeatService : IService<FeatModel>
             Effect = item.Effect,
             EffectChoices = item.EffectChoices,
             AbilityScoreIncreaseChoices = item.AbilityScoreIncreaseChoices,
-            AbilityScoreIncreases = item.AbilityScoreIncreases,
+            AbilityScoreIncreases = item.AbilityScoreIncreases
         };
-        
+
         return _featRepository.Update(id, feat);
     }
 }

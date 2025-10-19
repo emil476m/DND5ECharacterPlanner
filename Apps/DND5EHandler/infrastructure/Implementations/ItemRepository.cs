@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.ComTypes;
 using Core.Enums;
 using Core.Interfaces;
 using Core.Models.Items;
@@ -13,11 +12,12 @@ namespace infrastructure.Implementations;
 public class ItemRepository : IItemRepository
 {
     private readonly NpgsqlDataSource _dataSource;
-    
+
     public ItemRepository(NpgsqlDataSource dataSource)
     {
         _dataSource = dataSource;
     }
+
     /**
      * Methods that gets a list of all items and its subtypes
      */
@@ -26,7 +26,7 @@ public class ItemRepository : IItemRepository
         using var conn = await _dataSource.OpenConnectionAsync();
 
         // gets base item and entity data
-        
+
         const string sqlBase = @$"
         SELECT 
                e.id AS {nameof(ItemDbModel.Id)},
@@ -58,22 +58,19 @@ public class ItemRepository : IItemRepository
             new { EntityType = EntityType.Item },
             splitOn: nameof(ProficiencyModel.Id)
         )).ToDictionary(i => i.Id);
-        
+
         if (baseItems.Count == 0)
             return [];
-        
+
         var results = new List<ItemModel>();
-        
-        async Task AddSubItemsAsync<T>(string sql, Func<T, Guid> idSelector, Func<T , ItemDbModel, ItemModel> mapper)
+
+        async Task AddSubItemsAsync<T>(string sql, Func<T, Guid> idSelector, Func<T, ItemDbModel, ItemModel> mapper)
         {
             var subItems = await conn.QueryAsync<T>(sql);
             foreach (var s in subItems)
             {
                 var id = idSelector(s);
-                if (baseItems.TryGetValue(id, out var baseItem))
-                {
-                    results.Add(mapper(s, baseItem));
-                }
+                if (baseItems.TryGetValue(id, out var baseItem)) results.Add(mapper(s, baseItem));
             }
         }
 
@@ -84,14 +81,16 @@ public class ItemRepository : IItemRepository
                                                     strength_requirement AS {nameof(ArmorDbModel.StrengthRequirement)},   
                                                     is_shield AS {nameof(ArmorDbModel.IsShield)},    
                                                     stealth_disadvantage AS {nameof(ArmorDbModel.StealthDisadvantage)}
-                                                    FROM armor;", db => db.Id, (db, baseItem) => db.ToArmorModel(baseItem));
-        
+                                                    FROM armor;", db => db.Id,
+            (db, baseItem) => db.ToArmorModel(baseItem));
+
         await AddSubItemsAsync<CurrencyDbModel>(@$"SELECT
                                                         id AS {nameof(CurrencyDbModel.Id)},
                                                         denomination AS {nameof(CurrencyDbModel.Denomination)},
                                                         amount AS {nameof(CurrencyDbModel.Amount)}
-                                                        FROM currency;", db => db.Id, (db, baseItem) => db.ToCurrencyModel(baseItem));
-        
+                                                        FROM currency;", db => db.Id,
+            (db, baseItem) => db.ToCurrencyModel(baseItem));
+
         await AddSubItemsAsync<WeaponDbModel>($@"SELECT
                                                       id AS {nameof(WeaponDbModel.Id)},
                                                       damage AS {nameof(WeaponDbModel.Damage)},
@@ -101,28 +100,22 @@ public class ItemRepository : IItemRepository
                                                       range AS {nameof(WeaponDbModel.Range)}
                                                       FROM weapon;
                                                       ", db => db.Id, (db, baseItem) => db.ToWeaponModel(baseItem));
-        
+
         await AddSubItemsAsync<WondrousItemDbModel>(@$"SELECT
                                                             id AS {nameof(WondrousItemDbModel.Id)},
                                                             rarity AS {nameof(WondrousItemDbModel.Rarity)},
                                                             attunement_required AS {nameof(WondrousItemDbModel.RequiresAttunement)}
-                                                            FROM wondrous_item;", db => db.Id, (db, baseItem) => db.ToWondrousItemModel(baseItem));
+                                                            FROM wondrous_item;", db => db.Id,
+            (db, baseItem) => db.ToWondrousItemModel(baseItem));
 
         // Adds leftover base items, with no subtype
         foreach (var remaining in baseItems.Values)
-        {
             if (!results.Any(r => r.Id == remaining.Id))
-            {
                 results.Add(remaining.ToGenericItemModel());
-            }
-        }
-        
+
         return results;
     }
-    
 
-
-    
 
     public async Task<ItemModel?> GetItemById(Guid id)
     {
@@ -210,7 +203,7 @@ public class ItemRepository : IItemRepository
 
             if (weapon != null) return weapon.ToWeaponModel(baseItem);
         }
-        
+
         if (baseItem.Category == ItemCategory.WondrousItem)
         {
             var wondrous = await conn.QuerySingleOrDefaultAsync<WondrousItemDbModel>($@"
@@ -223,7 +216,7 @@ public class ItemRepository : IItemRepository
 
             if (wondrous != null) return wondrous.ToWondrousItemModel(baseItem);
         }
-        
+
         return baseItem.ToGenericItemModel();
     }
 
@@ -233,8 +226,314 @@ public class ItemRepository : IItemRepository
         var sql = "DELETE FROM dnd_entity WHERE id = @Id AND entity_type = @type;";
         return await conn.ExecuteAsync(sql, new { Id = id, type = EntityType.Item }) > 0;
     }
-    
-    
+
+
+    public async Task<ItemModel> CreateArmor(ArmorModel armor)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await CreateBaseEntityAndItem(armor, conn, tx);
+
+            await conn.ExecuteAsync(@"
+        INSERT INTO armor (id, armor_class, max_dex_bonus, strength_requirement, is_shield, stealth_disadvantage)
+        VALUES (@Id, @ArmorClass, @MaxDexBonus, @StrengthRequirement, @IsShield, @StealthDisadvantage);",
+                new
+                {
+                    armor.Id,
+                    armor.ArmorClass,
+                    armor.MaxDexBonus,
+                    armor.StrengthRequirement,
+                    armor.IsShield,
+                    armor.StealthDisadvantage
+                }, tx);
+
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not create armor", e);
+        }
+
+        return armor;
+    }
+
+    public async Task<ItemModel> CreateWeapon(WeaponModel weapon)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await CreateBaseEntityAndItem(weapon, conn, tx);
+
+            await conn.ExecuteAsync(@"
+            INSERT INTO weapon (id, damage, damage_type, weapon_type, properties, range)
+            VALUES (@Id, @Damage, @DamageType, @WeaponType, @Properties, @Range);",
+                new
+                {
+                    weapon.Id,
+                    weapon.Damage,
+                    weapon.DamageType,
+                    weapon.WeaponType,
+                    weapon.Properties,
+                    weapon.Range
+                }, tx);
+
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not create weapon", e);
+        }
+
+        return weapon;
+    }
+
+    public async Task<ItemModel> CreateGenericItem(ItemModel item)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await CreateBaseEntityAndItem(item, conn, tx);
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not create item", e);
+        }
+
+        return item;
+    }
+
+    public async Task<ItemModel> CreateCurrency(CurrencyModel currency)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await CreateBaseEntityAndItem(currency, conn, tx);
+
+            await conn.ExecuteAsync(@"
+        INSERT INTO currency (id, denomination, amount)
+        VALUES (@Id, @Denomination, @Amount);",
+                new
+                {
+                    currency.Id,
+                    currency.Denomination,
+                    currency.Amount
+                }, tx);
+
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not create currency", e);
+        }
+
+        return currency;
+    }
+
+    public async Task<ItemModel> CreateWondrous(WondrousItemModel wondrous)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await CreateBaseEntityAndItem(wondrous, conn, tx);
+
+            await conn.ExecuteAsync(@"
+        INSERT INTO wondrous_item (id, rarity, attunement_required)
+        VALUES (@Id, @Rarity, @RequiresAttunement);",
+                new
+                {
+                    wondrous.Id,
+                    wondrous.Rarity,
+                    wondrous.RequiresAttunement
+                }, tx);
+
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not create wondrous item", e);
+        }
+
+        return wondrous;
+    }
+
+    public async Task<ItemModel> UpdateArmor(ArmorModel armor)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await UpdateBaseEntityAndItem(armor, conn, tx);
+
+            await conn.ExecuteAsync(@"
+                    UPDATE armor
+                    SET armor_class = @ArmorClass, max_dex_bonus = @MaxDexBonus, strength_requirement = @StrengthRequirement,
+                        is_shield = @IsShield, stealth_disadvantage = @StealthDisadvantage
+                    WHERE id = @Id;",
+                new
+                {
+                    armor.Id,
+                    armor.ArmorClass,
+                    armor.MaxDexBonus,
+                    armor.StrengthRequirement,
+                    armor.IsShield,
+                    armor.StealthDisadvantage
+                }, tx);
+
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not update armor", e);
+        }
+
+        return armor;
+    }
+
+    public async Task<ItemModel> UpdateWeapon(WeaponModel weapon)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await UpdateBaseEntityAndItem(weapon, conn, tx);
+
+            await conn.ExecuteAsync(@"
+                    UPDATE weapon
+                    SET damage = @Damage, damage_type = @DamageType, weapon_type = @WeaponType, properties = @Properties, range = @Range
+                    WHERE id = @Id;",
+                new
+                {
+                    weapon.Id,
+                    weapon.Damage,
+                    weapon.DamageType,
+                    weapon.WeaponType,
+                    weapon.Properties,
+                    weapon.Range
+                }, tx);
+
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not update weapon", e);
+        }
+
+        return weapon;
+    }
+
+    public async Task<ItemModel> UpdateGenericItem(ItemModel item)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await UpdateBaseEntityAndItem(item, conn, tx);
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not update item", e);
+        }
+
+        return item;
+    }
+
+    public async Task<ItemModel> UpdateCurrency(CurrencyModel currency)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await UpdateBaseEntityAndItem(currency, conn, tx);
+
+            await conn.ExecuteAsync(@"
+                    UPDATE currency
+                    SET denomination = @Denomination, amount = @Amount
+                    WHERE id = @Id;",
+                new
+                {
+                    currency.Id,
+                    currency.Denomination,
+                    currency.Amount
+                }, tx);
+
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not update currency", e);
+        }
+
+        return currency;
+    }
+
+    public async Task<ItemModel> UpdateWondrous(WondrousItemModel wondrous)
+    {
+        using var conn = await _dataSource.OpenConnectionAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        try
+        {
+            //Creates base entity and item
+            await UpdateBaseEntityAndItem(wondrous, conn, tx);
+
+            await conn.ExecuteAsync(@"
+                    UPDATE wondrous_item
+                    SET rarity = @Rarity, attunement_required = @RequiresAttunement
+                    WHERE id = @Id;",
+                new
+                {
+                    wondrous.Id,
+                    wondrous.Rarity,
+                    wondrous.RequiresAttunement
+                }, tx);
+
+            await tx.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await tx.RollbackAsync();
+            throw new Exception("Could not update wondrous item", e);
+        }
+
+        return wondrous;
+    }
+
+
     private async Task CreateBaseEntityAndItem(ItemModel item, NpgsqlConnection conn, NpgsqlTransaction transaction)
     {
         const string sqlEntity = @"
@@ -243,13 +542,13 @@ public class ItemRepository : IItemRepository
 
         await conn.ExecuteAsync(sqlEntity, new
         {
-            Id = item.Id,
-            Name = item.Name,
-            IsPublic = item.IsPublic,
-            IsOfficial = item.IsOfficial,
-            CreatedByUserId = item.CreatedByUserId,
-            CreatedAt = item.CreatedAt,
-            UsedRuleset = item.UsedRuleset,
+            item.Id,
+            item.Name,
+            item.IsPublic,
+            item.IsOfficial,
+            item.CreatedByUserId,
+            item.CreatedAt,
+            item.UsedRuleset,
             Type = EntityType.Item
         }, transaction);
 
@@ -259,11 +558,11 @@ public class ItemRepository : IItemRepository
 
         await conn.ExecuteAsync(sqlItem, new
         {
-            Id = item.Id,
-            Category = item.Category,
-            Description = item.Description,
-            Weight = item.Weight,
-            CostInGold = item.CostInGold,
+            item.Id,
+            item.Category,
+            item.Description,
+            item.Weight,
+            item.CostInGold,
             ProficiencyId = item.RequiredProficiency?.Id
         }, transaction);
     }
@@ -281,10 +580,10 @@ public class ItemRepository : IItemRepository
         await conn.ExecuteAsync(sqlEntity, new
         {
             item.Id,
-            Name = item.Name,
-            IsPublic = item.IsPublic,
-            IsOfficial = item.IsOfficial,
-            UsedRuleset = item.UsedRuleset,
+            item.Name,
+            item.IsPublic,
+            item.IsOfficial,
+            item.UsedRuleset,
             Type = EntityType.Item
         }, transaction);
 
@@ -296,311 +595,15 @@ public class ItemRepository : IItemRepository
                 cost = @CostInGold,
                 proficiency = @ProficiencyId
             WHERE id = @Id;";
-        
+
         await conn.ExecuteAsync(sqlItem, new
         {
-            Id = item.Id,
-            Category = item.Category,
-            Description = item.Description,
-            Weight = item.Weight,
-            CostInGold = item.CostInGold,
-            ProficiencyId = item.RequiredProficiency?.Id,
+            item.Id,
+            item.Category,
+            item.Description,
+            item.Weight,
+            item.CostInGold,
+            ProficiencyId = item.RequiredProficiency?.Id
         }, transaction);
-    }
-
-
-    public async Task<ItemModel> CreateArmor(ArmorModel armor)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await CreateBaseEntityAndItem(armor, conn, tx);
-            
-            await conn.ExecuteAsync(@"
-        INSERT INTO armor (id, armor_class, max_dex_bonus, strength_requirement, is_shield, stealth_disadvantage)
-        VALUES (@Id, @ArmorClass, @MaxDexBonus, @StrengthRequirement, @IsShield, @StealthDisadvantage);",
-                new
-                {
-                    Id = armor.Id,
-                    ArmorClass = armor.ArmorClass,
-                    MaxDexBonus = armor.MaxDexBonus,
-                    StrengthRequirement = armor.StrengthRequirement,
-                    IsShield = armor.IsShield,
-                    StealthDisadvantage = armor.StealthDisadvantage
-                }, tx);
-            
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not create armor", e);
-        }
-        return armor; 
-    }
-
-    public async Task<ItemModel> CreateWeapon(WeaponModel weapon)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await CreateBaseEntityAndItem(weapon, conn, tx);
-            
-            await conn.ExecuteAsync(@"
-            INSERT INTO weapon (id, damage, damage_type, weapon_type, properties, range)
-            VALUES (@Id, @Damage, @DamageType, @WeaponType, @Properties, @Range);",
-                new
-                {
-                    Id = weapon.Id,
-                    Damage = weapon.Damage,
-                    DamageType = weapon.DamageType,
-                    WeaponType = weapon.WeaponType,
-                    Properties = weapon.Properties,
-                    Range = weapon.Range
-                }, tx);
-            
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not create weapon", e);
-        }
-        return weapon; 
-    }
-
-    public async Task<ItemModel> CreateGenericItem(ItemModel item)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await CreateBaseEntityAndItem(item, conn, tx);
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not create item", e);
-        }
-        return item;
-    }
-
-    public async Task<ItemModel> CreateCurrency(CurrencyModel currency)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await CreateBaseEntityAndItem(currency, conn, tx);
-            
-            await conn.ExecuteAsync(@"
-        INSERT INTO currency (id, denomination, amount)
-        VALUES (@Id, @Denomination, @Amount);",
-                new
-                {
-                    Id = currency.Id,
-                    Denomination = currency.Denomination,
-                    Amount = currency.Amount
-                }, tx);
-            
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not create currency", e);
-        }
-        return currency;
-    }
-
-    public async Task<ItemModel> CreateWondrous(WondrousItemModel wondrous)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await CreateBaseEntityAndItem(wondrous, conn, tx);
-            
-            await conn.ExecuteAsync(@"
-        INSERT INTO wondrous_item (id, rarity, attunement_required)
-        VALUES (@Id, @Rarity, @RequiresAttunement);",
-                new
-                {
-                    Id = wondrous.Id,
-                    Rarity = wondrous.Rarity,
-                    RequiresAttunement = wondrous.RequiresAttunement
-                }, tx);
-            
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not create wondrous item", e);
-        }
-        return wondrous;
-    }
-
-    public async Task<ItemModel> UpdateArmor(ArmorModel armor)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await UpdateBaseEntityAndItem(armor, conn, tx);
-            
-            await conn.ExecuteAsync(@"
-                    UPDATE armor
-                    SET armor_class = @ArmorClass, max_dex_bonus = @MaxDexBonus, strength_requirement = @StrengthRequirement,
-                        is_shield = @IsShield, stealth_disadvantage = @StealthDisadvantage
-                    WHERE id = @Id;",
-                new
-                {
-                    Id = armor.Id,
-                    ArmorClass = armor.ArmorClass,
-                    MaxDexBonus = armor.MaxDexBonus,
-                    StrengthRequirement = armor.StrengthRequirement,
-                    IsShield = armor.IsShield,
-                    StealthDisadvantage = armor.StealthDisadvantage
-                }, tx);
-            
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not update armor", e);
-        }
-        return armor;
-    }
-
-    public async Task<ItemModel> UpdateWeapon(WeaponModel weapon)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await UpdateBaseEntityAndItem(weapon, conn, tx);
-            
-            await conn.ExecuteAsync(@"
-                    UPDATE weapon
-                    SET damage = @Damage, damage_type = @DamageType, weapon_type = @WeaponType, properties = @Properties, range = @Range
-                    WHERE id = @Id;",
-                new
-                {
-                    Id = weapon.Id,
-                    Damage = weapon.Damage,
-                    DamageType = weapon.DamageType,
-                    WeaponType = weapon.WeaponType,
-                    Properties = weapon.Properties,
-                    Range = weapon.Range
-                }, tx);
-            
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not update weapon", e);
-        }
-        return weapon;
-    }
-
-    public async Task<ItemModel> UpdateGenericItem(ItemModel item)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await UpdateBaseEntityAndItem(item, conn, tx);
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not update item", e);
-        }
-        return item;
-    }
-
-    public async Task<ItemModel> UpdateCurrency(CurrencyModel currency)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await UpdateBaseEntityAndItem(currency, conn, tx);
-            
-            await conn.ExecuteAsync(@"
-                    UPDATE currency
-                    SET denomination = @Denomination, amount = @Amount
-                    WHERE id = @Id;",
-                new
-                {
-                    Id = currency.Id,
-                    Denomination = currency.Denomination,
-                    Amount = currency.Amount
-                }, tx);
-            
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not update currency", e);
-        }
-        return currency;
-    }
-
-    public async Task<ItemModel> UpdateWondrous(WondrousItemModel wondrous)
-    {
-        using var conn = await _dataSource.OpenConnectionAsync();
-        using var tx = await conn.BeginTransactionAsync();
-        
-        try
-        {
-            //Creates base entity and item
-            await UpdateBaseEntityAndItem(wondrous, conn, tx);
-            
-            await conn.ExecuteAsync(@"
-                    UPDATE wondrous_item
-                    SET rarity = @Rarity, attunement_required = @RequiresAttunement
-                    WHERE id = @Id;",
-                new
-                {
-                    Id = wondrous.Id,
-                    Rarity = wondrous.Rarity,
-                    RequiresAttunement = wondrous.RequiresAttunement
-                }, tx);
-            
-            await tx.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            await tx.RollbackAsync();
-            throw new Exception("Could not update wondrous item", e);
-        }
-        return wondrous;
     }
 }
