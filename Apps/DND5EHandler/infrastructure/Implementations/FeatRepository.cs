@@ -139,8 +139,8 @@ public class FeatRepository : IRepository<FeatModel>
     public async Task<bool> Delete(Guid id)
     {
         using var conn = _dataSource.OpenConnection();
-        var sql = "DELETE FROM dnd_entity WHERE id = @Id;";
-        return await conn.ExecuteAsync(sql, new { Id = id }) > 0;
+        var sql = "DELETE FROM dnd_entity WHERE id = @Id AND entity_type = @type;";
+        return await conn.ExecuteAsync(sql, new { Id = id, type = EntityType.Feat }) > 0;
     }
     
     /// <summary>

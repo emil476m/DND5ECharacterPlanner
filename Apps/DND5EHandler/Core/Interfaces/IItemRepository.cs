@@ -10,13 +10,13 @@ public interface IItemRepository
 
     Task<ItemModel> CreateArmor(ArmorModel armor);
     Task<ItemModel> CreateWeapon(WeaponModel weapon);
-    Task<ItemModel> CreateTool(ToolModel tool);
+    Task<ItemModel> CreateGenericItem(ItemModel item);
     Task<ItemModel> CreateCurrency(CurrencyModel currency);
     Task<ItemModel> CreateWondrous(WondrousItemModel wondrous);
     
     Task<ItemModel> UpdateArmor(ArmorModel armor);
     Task<ItemModel> UpdateWeapon(WeaponModel weapon);
-    Task<ItemModel> UpdateTool(ToolModel tool);
+    Task<ItemModel> UpdateGenericItem(ItemModel item);
     Task<ItemModel> UpdateCurrency(CurrencyModel currency);
     Task<ItemModel> UpdateWondrous(WondrousItemModel wondrous);
 }

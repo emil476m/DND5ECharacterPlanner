@@ -10,6 +10,6 @@ public abstract class ItemModel : DndEntityModel
     public double Weight { get; set; }
     public int? CostInGold { get; set; }
     
-    public ProficiencyModel RequiredProficiency { get; set; }
+    public ProficiencyModel? RequiredProficiency { get; set; }
 }
 

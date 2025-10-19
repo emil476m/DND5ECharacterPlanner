@@ -5,9 +5,9 @@ namespace infrastructure.Mappers;
 
 public static class ItemMapper
 {
-    public static ItemModel ToItemModel(this ItemDbModel dbModel)
+    public static GenericItemModel ToGenericItemModel(this ItemDbModel dbModel)
     {
-        return new ArmorModel
+        return new GenericItemModel
         {
             //Entity properties
             Id = dbModel.Id,
@@ -133,6 +133,31 @@ public static class ItemMapper
             WeaponType = weaponModel.WeaponType,
             Properties = weaponModel.Properties,
             Range = weaponModel.Range,
+        };
+    }
+    
+    public static WondrousItemModel ToWondrousItemModel(this WondrousItemDbModel WondrousItemModel, ItemDbModel dbModel)
+    {
+        return new WondrousItemModel
+        {
+            //Entity properties
+            Id = dbModel.Id,
+            Name = dbModel.Name,
+            IsPublic = dbModel.IsPublic,
+            IsOfficial = dbModel.IsOfficial,
+            CreatedByUserId = dbModel.CreatedByUserId,
+            CreatedAt = dbModel.CreatedAt,
+            UsedRuleset = dbModel.UsedRuleset,
+            Type = dbModel.Type,
+            //Item properties
+            Category = dbModel.Category,
+            Description = dbModel.Description,
+            Weight = dbModel.Weight,
+            CostInGold = dbModel.CostInGold,
+            RequiredProficiency = dbModel.RequiredProficiency,
+            //Weapon properties
+            Rarity = WondrousItemModel.Rarity,
+            RequiresAttunement = WondrousItemModel.RequiresAttunement,
         };
     }
 }

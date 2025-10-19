@@ -12,6 +12,8 @@ public static class ItemMapper
             ArmorModel a => a.ToArmorDto(),
             CurrencyModel c => c.ToCurrencyDto(),
             WeaponModel w => w.ToWeaponDto(),
+            WondrousItemModel wi => wi.ToWondrousItemDto(),
+            GenericItemModel gi => gi.ToGenericItemDto(),
             _ => throw new NotSupportedException($"Unsupported item subtype: {model.GetType().Name}")
         };
     }
@@ -94,6 +96,53 @@ public static class ItemMapper
             WeaponType = model.WeaponType,
             Properties = model.Properties,
             Range = model.Range,
+        };
+    }
+    
+    public static WondrousItemDto ToWondrousItemDto(this WondrousItemModel model)
+    {
+        return new WondrousItemDto
+        {
+            // DndEntity
+            Id = model.Id,
+            Name = model.Name,
+            IsPublic = model.IsPublic,
+            IsOfficial = model.IsOfficial,
+            CreatedByUserId = model.CreatedByUserId,
+            CreatedAt = model.CreatedAt,
+            UsedRuleset = model.UsedRuleset,
+            Type = model.Type,
+            // Item
+            Category = model.Category,
+            Description = model.Description,
+            Weight = model.Weight,
+            CostInGold = model.CostInGold,
+            RequiredProficiency = model.RequiredProficiency,
+            // Weapon
+            Rarity = model.Rarity,
+            RequiresAttunement = model.RequiresAttunement,
+        };
+    }
+    
+    public static GenericItemDto ToGenericItemDto(this GenericItemModel dto)
+    {
+        return new GenericItemDto
+        {
+            // DndEntity
+            Id = dto.Id,
+            Name = dto.Name,
+            IsPublic = dto.IsPublic,
+            IsOfficial = dto.IsOfficial,
+            CreatedByUserId = dto.CreatedByUserId,
+            CreatedAt = dto.CreatedAt,
+            UsedRuleset = dto.UsedRuleset,
+            Type = dto.Type,
+            // Item
+            Category = dto.Category,
+            Description = dto.Description,
+            Weight = dto.Weight,
+            CostInGold = dto.CostInGold,
+            RequiredProficiency = dto.RequiredProficiency,
         };
     }
 }
