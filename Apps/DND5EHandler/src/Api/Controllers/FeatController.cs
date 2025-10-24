@@ -23,30 +23,28 @@ public class FeatController : ControllerBase
         if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
 
         var result = await _featService.Create(item.ToFeatModel());
-        var response = result.ToFeatDto().ToResponseDto("Created Feat");
+        var response = result.ToFeatDto();
 
-        return response != null ? Ok(response) : NotFound();
+        return response != null ? Created("Created Feat", response) : NotFound();
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteFeat([FromBody] Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteFeat([FromRoute] Guid id)
     {
-        if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
+        if (id == Guid.Empty) return BadRequest();
 
-        var result = await _featService.Delete(id);
-        var response = result.ToReturnedBoolDto();
-        return response != null ? Ok(response) : NotFound();
+        var deleted = await _featService.Delete(id);
+        return deleted ? NoContent() : NotFound();
     }
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateFeat([FromBody] FeatCreateDto item, Guid id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateFeat([FromRoute] Guid id, [FromBody] FeatCreateDto item)
     {
-        if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Effect)) return BadRequest();
+        if (id == Guid.Empty) return BadRequest();
+        if (string.IsNullOrWhiteSpace(item.Name) || string.IsNullOrWhiteSpace(item.Effect)) return BadRequest();
 
-        var result = await _featService.Update(id, item.ToFeatModel());
-        var response = result.ToFeatDto().ToResponseDto("Updated Feat");
-
-        return response != null ? Ok(response) : NotFound();
+        var updated = await _featService.Update(id, item.ToFeatModel());
+        return updated != null ? Ok(updated) : NotFound();
     }
 
     [HttpGet]
