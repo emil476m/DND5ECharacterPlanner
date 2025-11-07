@@ -48,7 +48,7 @@ public class FeatController : ControllerBase
     }
 
     [HttpGet]
-    [Route("Feat/{featId}")]
+    [Route("{featId}")]
     public async Task<IActionResult> GetSpecificFeat([FromRoute] Guid featId)
     {
         if (string.IsNullOrEmpty(featId.ToString())) return BadRequest();
@@ -59,7 +59,7 @@ public class FeatController : ControllerBase
     }
 
     [HttpGet]
-    [Route("Feat/SimpleList")]
+    [Route("SimpleList")]
     public async Task<IActionResult> GetSimpleFeatList()
     {
         var result = await _featService.GetSimpleList();
@@ -68,7 +68,7 @@ public class FeatController : ControllerBase
     }
 
     [HttpGet]
-    [Route("Feat/DetailedList")]
+    [Route("DetailedList")]
     public async Task<IActionResult> GetDetailedFeatList()
     {
         var result = await _featService.GetDetailedList();
