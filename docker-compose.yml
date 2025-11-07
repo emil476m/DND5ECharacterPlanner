@@ -1,14 +1,13 @@
 services:
   database:
-    image: postgres
+    image: postgres:18
     command: -c 'max_connections=100'
     ports:
       - 5001:5432
     #restart: always
     volumes:
-      - pgdatadnd5e:/var/lib/postgresql/data
-      - ./Scripts/shell/sql-set-up.sh:/docker-entrypoint-initdb.d/sql-set-up.sh
-      - ./Scripts/sql:/Scripts/sql
+      - pgdatadnd5e:/var/lib/postgresql
+      - ./Scripts/sql:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
