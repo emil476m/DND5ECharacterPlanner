@@ -12,4 +12,5 @@ public class DndEntityDto
     public DateTime CreatedAt { get; set; }
     public RuleSet UsedRuleset { get; set; }
     public EntityType Type { get; set; }
+    public string? Source { get; set; }
 }
