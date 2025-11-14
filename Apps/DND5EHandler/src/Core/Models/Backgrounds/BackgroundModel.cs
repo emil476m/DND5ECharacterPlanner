@@ -7,28 +7,30 @@ namespace Core.Models.Backgrounds;
 public class BackgroundModel : DndEntityModel
 {
     public string Description { get; set; } = string.Empty;
+    
+    // Background Feature
+    public BackgroundFeatureModel? FeatureModel { get; set; } = new();
+    
+    public CharacteristicsModel? Characteristics { get; set; } = new();
 
-    // Fixed Proficiencies
-    public List<ProficiencyModel> FixedProficiencies { get; set; } = new();
+    // Proficiencies
+    public List<ProficiencyModel>? FixedProficiencies { get; set; }
+    public List<ChoiceModel<ProficiencyModel>>? ProficiencyChoices { get; set; }
 
-    // Choice-Based Proficiencies
-    public List<ChoiceModel<ProficiencyModel>> ProficiencyChoices { get; set; } = new();
-
-    // Fixed and Choice-Based Languages
-    public List<string> FixedLanguages { get; set; } = new();
-    public List<ChoiceModel<string>> LanguageChoices { get; set; } = new();
+    // Languages
+    public List<LanguageModel>? FixedLanguages { get; set; }
+    public ChoiceModel<LanguageModel>? LanguageChoices { get; set; }
 
     // Starting Equipment
-    public List<ItemModel> StartingEquipment { get; set; } = new();
+    public List<ItemModel>? StartingEquipment { get; set; }
+    public ChoiceModel<ItemModel>? StartingEquipmentChoices { get; set; }
 
-    // Background Feature
-    public BackgroundFeatureModel FeatureModel { get; set; } = new();
+    
 
     // Feats
-    public List<FeatModel> FixedFeats { get; set; } = new();
-    public List<ChoiceModel<FeatModel>> FeatChoices { get; set; } = new();
+    public List<FeatModel>? FixedFeats { get; set; }
+    public ChoiceModel<FeatModel>? FeatChoices { get; set; }
 
     // Ability Score Increases
-    public List<AbilityScoreIncreaseModel> AbilityScoreIncreases { get; set; } = new();
-    public List<ChoiceModel<AbilityScoreIncreaseModel>> AbilityScoreIncreaseChoices { get; set; } = new();
+    public List<ChoiceModel<AbilityScoreIncreaseModel>>? AbilityScoreIncreaseChoices { get; set; }
 }
