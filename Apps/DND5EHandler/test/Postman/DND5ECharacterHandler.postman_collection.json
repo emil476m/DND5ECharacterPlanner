@@ -1,0 +1,1754 @@
+{
+	"info": {
+		"name": "DND5ECharacterHandler",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "DND5EHandler",
+			"item": [
+				{
+					"name": "Feats",
+					"item": [
+						{
+							"name": "Create",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"featName\", \"Wayfinder's Instinct \" + random);\r",
+											"pm.environment.set(\"featIsPublic\", true);\r",
+											"pm.environment.set(\"dndRuleSet\", \"DND5E_2014\");\r",
+											"pm.environment.set(\"featEffect\", \"You can always determine the cardinal directions while on the same plane.\");"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is json\", function () {\r",
+											"    pm.response.to.be.json;\r",
+											"});\r",
+											"\r",
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Expected name on response feat\", function () {\r",
+											"    \r",
+											"    const expectedName = pm.environment.get(\"featName\");\r",
+											"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"returnedGuid\", jsonData.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Name\": \"{{featName}}\",\r\n    \"IsPublic\": {{featIsPublic}},\r\n    \"UsedRuleset\": \"{{dndRuleSet}}\",\r\n    \"Effect\": \"{{featEffect}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Feat",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create - Score + Effect",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"featName\", \"ZZ_TestFeat_ASI_Effect_ \" + random);\r",
+											"pm.environment.set(\"featIsPublic\", true);\r",
+											"pm.environment.set(\"dndRuleSet\", \"DND5E_2014\");\r",
+											"pm.environment.set(\"featEffect\", \"You can always determine the cardinal directions while on the same plane.\");\r",
+											"pm.environment.set(\"AttributeType\", \"STR\")\r",
+											"pm.environment.set(\"AttributeIncrease\", _.random(1, 3))"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is json\", function () {\r",
+											"    pm.response.to.be.json;\r",
+											"});\r",
+											"\r",
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Expected name on response feat\", function () {\r",
+											"    \r",
+											"    const expectedName = pm.environment.get(\"featName\");\r",
+											"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"returnedGuid2\", jsonData.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{featName}}\",\r\n  \"IsPublic\": {{featIsPublic}},\r\n    \"UsedRuleset\": \"{{dndRuleSet}}\",\r\n  \"effect\": \"{{featEffect}}\",\r\n  \"abilityScoreImprovements\": [\r\n    { \"ability\": \"{{AttributeType}}\", \"increase\": {{AttributeIncrease}} }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Feat",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create - Effect Choice",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"featName\", \"ZZ_TestFeat_ASI_Effect_ \" + random);\r",
+											"pm.environment.set(\"featIsPublic\", true);\r",
+											"pm.environment.set(\"dndRuleSet\", \"DND5E_2014\");\r",
+											"pm.environment.set(\"featEffect\", \"You can always determine the cardinal directions while on the same plane.\");\r",
+											"\r",
+											"pm.environment.set(\"effectDescription\", \"You manifest a few of these powers\");\r",
+											"pm.environment.set(\"choiceAmount\", _.random(1, 3))\r",
+											"\r",
+											"pm.environment.set(\"effect1\", \"get wings and 30 fly speed\")\r",
+											"pm.environment.set(\"effect2\", \"Can see 60f in darkness\")\r",
+											"pm.environment.set(\"effect3\", \"Grats you win + 10 free stats\")"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is json\", function () {\r",
+											"    pm.response.to.be.json;\r",
+											"});\r",
+											"\r",
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Expected name on response feat\", function () {\r",
+											"    \r",
+											"    const expectedName = pm.environment.get(\"featName\");\r",
+											"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"returnedGuid3\", jsonData.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{featName}}\",\r\n  \"IsPublic\": {{featIsPublic}},\r\n  \"UsedRuleset\": \"{{dndRuleSet}}\",\r\n  \"effect\": \"{{featEffect}}\",\r\n  \"effectChoices\": [\r\n    {\r\n      \"description\": \"{{effectDescription}}\",\r\n      \"numberToChoose\": {{choiceAmount}},\r\n      \"options\": [\r\n        \"{{effect1}}\",\r\n        \"{{effect2}}\",\r\n        \"{{effect3}}\"\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Feat",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create - Score Choice",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"featName\", \"StatsForYou... yes yes :) \" + random);\r",
+											"pm.environment.set(\"featIsPublic\", true);\r",
+											"pm.environment.set(\"dndRuleSet\", \"DND5E_2014\");\r",
+											"pm.environment.set(\"featEffect\", \"you feel an increase in 2 different aspects\");\r",
+											"\r",
+											"pm.environment.set(\"scoreDescription\", \"You feel either smarter or stronger\");\r",
+											"pm.environment.set(\"scoreDescription2\", \"You feel either more beutiful or more nimble\");\r",
+											"pm.environment.set(\"scoreChoices\", _.random(1, 3))\r",
+											"pm.environment.set(\"scoreChoices2\", _.random(1, 3))\r",
+											"\r",
+											"pm.environment.set(\"score1\", \"STR\")\r",
+											"pm.environment.set(\"score2\", \"INT\")\r",
+											"pm.environment.set(\"score3\", \"CHR\")\r",
+											"pm.environment.set(\"score4\", \"DEX\")\r",
+											"\r",
+											"pm.environment.set(\"score1Increase\", 1)\r",
+											"pm.environment.set(\"score2Increase\", 1)\r",
+											"pm.environment.set(\"score3Increase\", 2)\r",
+											"pm.environment.set(\"score4Increase\", 2)\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is json\", function () {\r",
+											"    pm.response.to.be.json;\r",
+											"});\r",
+											"\r",
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Expected name on response feat\", function () {\r",
+											"    \r",
+											"    const expectedName = pm.environment.get(\"featName\");\r",
+											"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"returnedGuid4\", jsonData.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{featName}}\",\r\n  \"IsPublic\": {{featIsPublic}},\r\n  \"UsedRuleset\": \"{{dndRuleSet}}\",\r\n  \"effect\": \"{{featEffect}}\",\r\n  \"abilityScoreIncreaseChoices\": [\r\n    {\r\n      \"description\": \"{{scoreDescription}}\",\r\n      \"numberToChoose\": {{scoreChoices}},\r\n      \"options\": [\r\n        {\r\n          \"ability\": \"{{score1}}\",\r\n          \"amount\": {{score1Increase}}\r\n        },\r\n        {\r\n          \"ability\": \"{{score2}}\",\r\n          \"amount\": {{score2Increase}}\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"description\": \"{{scoreDescription2}}\",\r\n      \"numberToChoose\": {{scoreChoices2}},\r\n      \"options\": [\r\n        {\r\n          \"ability\": \"{{score3}}\",\r\n          \"amount\": {{score3Increase}}\r\n        },\r\n        {\r\n          \"ability\": \"{{score4}}\",\r\n          \"amount\": {{score4Increase}}\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Feat",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create - Wrong Data",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"featName\", \"Wayfinder's Instinct \" + random);\r",
+											"pm.environment.set(\"featIsPublic\", \"true\");\r",
+											"pm.environment.set(\"dndRuleSet\", \"DND5E_2014123123\");\r",
+											"pm.environment.set(\"featEffect\", \"You can always determine the cardinal directions while on the same plane.\");"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 400 bad request\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Name\": \"{{featName}}\",\r\n    \"IsPublic\": {{featIsPublic}},\r\n    \"UsedRuleset\": \"{{dndRuleSet}}\",\r\n    \"Effect\": \"{{featEffect}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Feat",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create - Missing Data",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"featName\", \"Wayfinder's Instinct \" + random);\r",
+											"pm.environment.set(\"featIsPublic\", true);\r",
+											"pm.environment.set(\"dndRuleSet\", \"DND5E_2014\");"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 400 bad request\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Name\": \"{{featName}}\",\r\n    \"IsPublic\": {{featIsPublic}},\r\n    \"UsedRuleset\": \"{{dndRuleSet}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Feat",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"featName\", \"Wayfinder's Instinct v2\" + random);\r",
+											"pm.environment.set(\"featIsPublic\", true);\r",
+											"pm.environment.set(\"dndRuleSet\", \"DND5E_2024\");\r",
+											"pm.environment.set(\"featEffect\", \"You can always determine the cardinal directions while on the same plane.v2\");"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is json\", function () {\r",
+											"    pm.response.to.be.json;\r",
+											"});\r",
+											"\r",
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Expected name on response feat\", function () {\r",
+											"    \r",
+											"    const expectedName = pm.environment.get(\"featName\");\r",
+											"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"returnedGuid\", jsonData.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Name\": \"{{featName}}\",\r\n    \"IsPublic\": {{featIsPublic}},\r\n    \"UsedRuleset\": \"{{dndRuleSet}}\",\r\n    \"Effect\": \"{{featEffect}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Feat/{{returnedGuid}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"{{returnedGuid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update - Wrong Data",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"featName\", \"Wayfinder's Instinct v3\" + random);\r",
+											"pm.environment.set(\"featIsPublic\", \"notabool\");\r",
+											"pm.environment.set(\"dndRuleSet\", \"Bullshit i made up\");\r",
+											"pm.environment.set(\"featEffect\", \"You can always determine the cardinal directions while on the same plane.v3\");"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400 bad request\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Name\": \"{{featName}}\",\r\n    \"IsPublic\": {{featIsPublic}},\r\n    \"UsedRuleset\": \"{{dndRuleSet}}\",\r\n    \"Effect\": \"{{featEffect}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Feat/{{returnedGuid}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"{{returnedGuid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetSingleResult",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"GET /Feat/Feat/{featId} has expected shape\", function () {\r",
+											"  const json = pm.response.json();\r",
+											"  pm.expect(json).to.have.property(\"id\", pm.collectionVariables.get(\"returnedGuid\"));\r",
+											"  pm.expect(json).to.have.property(\"name\").that.is.a(\"string\");\r",
+											"  pm.expect(json).to.have.property(\"effect\").that.is.a(\"string\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/{{returnedGuid}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"{{returnedGuid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetSingleResult - Incorrect id format",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/ffff",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"ffff"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetSimpleList",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"GET /Feat/SimpleList returns an array\", function () {\r",
+											"  const json = pm.response.json();\r",
+											"  pm.expect(Array.isArray(json)).to.be.true;\r",
+											"});\r",
+											"pm.test(\"GET /Feat/SimpleList items have id, name, isPublic and usedRuleset\", function () {\r",
+											"  const json = pm.response.json();\r",
+											"  if (json.length > 0) {\r",
+											"    pm.expect(json[0]).to.have.property(\"id\");\r",
+											"    pm.expect(json[0]).to.have.property(\"name\").that.is.a(\"string\");\r",
+											"    pm.expect(json[0]).to.have.property(\"isPublic\").that.is.a(\"boolean\");\r",
+											"    pm.expect(json[0]).to.have.property(\"usedRuleset\").that.is.a(\"string\");\r",
+											"  }\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/SimpleList",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"SimpleList"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetDetailedList",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"GET /Feat/SimpleList returns an array\", function () {\r",
+											"  const json = pm.response.json();\r",
+											"  pm.expect(Array.isArray(json)).to.be.true;\r",
+											"});\r",
+											"pm.test(\"GET /Feat/SimpleList items have id, name, isPublic and usedRuleset\", function () {\r",
+											"  const json = pm.response.json();\r",
+											"  if (json.length > 0) {\r",
+											"    pm.expect(json[0]).to.have.property(\"id\");\r",
+											"    pm.expect(json[0]).to.have.property(\"name\").that.is.a(\"string\");\r",
+											"    pm.expect(json[0]).to.have.property(\"effect\").that.is.a(\"string\");\r",
+											"    pm.expect(json[0]).to.have.property(\"isPublic\").that.is.a(\"boolean\");\r",
+											"    pm.expect(json[0]).to.have.property(\"usedRuleset\").that.is.a(\"string\");\r",
+											"  }\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/DetailedList",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"DetailedList"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\" returns 204 No Content\", () => {\r",
+											"  pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/{{returnedGuid}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"{{returnedGuid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete - No Content",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"returns 404 not found\", () => {\r",
+											"  pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/{{returnedGuid}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"{{returnedGuid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Items",
+					"item": [
+						{
+							"name": "Armor",
+							"item": [
+								{
+									"name": "Create Armor",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"var random = Math.random().toString(36).substring(2);\r",
+													"pm.environment.set(\"armorName\", \"Leather Armor \" + random);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 300ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response is json\", function () {\r",
+													"    pm.response.to.be.json;\r",
+													"});\r",
+													"\r",
+													"var jsonData = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Expected name on response item\", function () {\r",
+													"    \r",
+													"    const expectedName = pm.environment.get(\"armorName\");\r",
+													"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+													"});\r",
+													"\r",
+													"pm.collectionVariables.set(\"returnedArmorGuid\", jsonData.id);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"armorClass\": 11,\r\n    \"maxDexBonus\": null,\r\n    \"strengthRequirement\": 0,\r\n    \"isShield\": false,\r\n    \"stealthDisadvantage\": false,\r\n    \"category\": \"ArmorAndShields\",\r\n    \"description\": \"Light armor made of tanned leather\",\r\n    \"weight\": 10,\r\n    \"costInGold\": 10,\r\n    \"requiredProficiency\": {\r\n      \"id\": \"00000000-0000-0000-0000-000000000001\",\r\n      \"name\": \"Light Armor\"\r\n    },\r\n    \r\n    \"name\": \"{{armorName}}\",\r\n    \"isPublic\": true,\r\n    \"usedRuleset\": \"DND5E_2014\",\r\n    \"type\": \"Item\"\r\n  }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/Item/Armor",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"Armor"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Armor",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\" returns 204 No Content\", () => {\r",
+													"  pm.response.to.have.status(204);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/Item/{{returnedArmorGuid}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"{{returnedArmorGuid}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Weapon",
+							"item": [
+								{
+									"name": "Create Weapon",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"var random = Math.random().toString(36).substring(2);\r",
+													"pm.environment.set(\"weaponName\", \"Shortbow \" + random);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 300ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response is json\", function () {\r",
+													"    pm.response.to.be.json;\r",
+													"});\r",
+													"\r",
+													"var jsonData = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Expected name on response item\", function () {\r",
+													"    \r",
+													"    const expectedName = pm.environment.get(\"weaponName\");\r",
+													"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+													"});\r",
+													"\r",
+													"pm.collectionVariables.set(\"returnedWeaponGuid\", jsonData.id);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"damage\": \"1d6\",\r\n    \"damageType\": \"Piercing\",\r\n    \"weaponType\": \"SimpleRanged\",\r\n    \"properties\": \"Two-Handed\",\r\n    \"range\": 80,\r\n    \"category\": \"Weapon\",\r\n    \"description\": \"Simple ranged weapon\",\r\n    \"weight\": 2,\r\n    \"costInGold\": 25,\r\n    \"requiredProficiency\": {\r\n      \"id\": \"00000000-0000-0000-0000-000000000004\",\r\n      \"name\": \"Simple Weapons\"\r\n    },\r\n    \"name\": \"{{weaponName}}\",\r\n    \"isPublic\": true,\r\n    \"usedRuleset\": \"DND5E_2014\",\r\n    \"type\": \"Item\"\r\n  }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/Item/Weapon",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"Weapon"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Weapon",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\" returns 204 No Content\", () => {\r",
+													"  pm.response.to.have.status(204);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/Item/{{returnedWeaponGuid}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"{{returnedWeaponGuid}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Generic Item",
+							"item": [
+								{
+									"name": "Create Generic Item",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"var random = Math.random().toString(36).substring(2);\r",
+													"pm.environment.set(\"genericItemName\", \"Lantern, Hooded \" + random);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 300ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response is json\", function () {\r",
+													"    pm.response.to.be.json;\r",
+													"});\r",
+													"\r",
+													"var jsonData = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Expected name on response item\", function () {\r",
+													"    \r",
+													"    const expectedName = pm.environment.get(\"genericItemName\");\r",
+													"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+													"});\r",
+													"\r",
+													"pm.collectionVariables.set(\"returnedGenericItemGuid\", jsonData.id);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"category\": \"AdventuringGear\",\r\n    \"description\": \"Bright light in 30 ft radius\",\r\n    \"weight\": 2,\r\n    \"costInGold\": 5,\r\n    \"requiredProficiency\": null,\r\n    \"name\": \"{{genericItemName}}\",\r\n    \"isPublic\": true,\r\n    \"usedRuleset\": \"DND5E_2014\",\r\n    \"type\": \"Item\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/Item/GenericItem",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"GenericItem"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Generic Item",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\" returns 204 No Content\", () => {\r",
+													"  pm.response.to.have.status(204);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/Item/{{returnedGenericItemGuid}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"{{returnedGenericItemGuid}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Currency",
+							"item": [
+								{
+									"name": "Create Currency",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"var random = Math.random().toString(36).substring(2);\r",
+													"pm.environment.set(\"currencyName\", \"Silver Coins (50 sp)\" + random);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 300ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response is json\", function () {\r",
+													"    pm.response.to.be.json;\r",
+													"});\r",
+													"\r",
+													"var jsonData = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Expected name on response item\", function () {\r",
+													"    \r",
+													"    const expectedName = pm.environment.get(\"currencyName\");\r",
+													"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+													"});\r",
+													"\r",
+													"pm.collectionVariables.set(\"returnedCurrencyGuid\", jsonData.id);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"denomination\": \"sp\",\r\n    \"amount\": 50,\r\n    \"category\": \"Currency\",\r\n    \"description\": \"Stack of 50 silver coins\",\r\n    \"weight\": 5,\r\n    \"costInGold\": null,\r\n    \"requiredProficiency\": null,\r\n    \"name\": \"{{currencyName}}\",\r\n    \"isPublic\": true,\r\n    \"usedRuleset\": \"DND5E_2014\",\r\n    \"type\": \"Item\"\r\n  }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/Item/Currency",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"Currency"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Currency",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\" returns 204 No Content\", () => {\r",
+													"  pm.response.to.have.status(204);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/Item/{{returnedCurrencyGuid}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"{{returnedCurrencyGuid}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Wondrous Item",
+							"item": [
+								{
+									"name": "Create Wondrous",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"var random = Math.random().toString(36).substring(2);\r",
+													"pm.environment.set(\"wondrousName\", \"Cloak of Protection\" + random);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 300ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response is json\", function () {\r",
+													"    pm.response.to.be.json;\r",
+													"});\r",
+													"\r",
+													"var jsonData = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Expected name on response item\", function () {\r",
+													"    \r",
+													"    const expectedName = pm.environment.get(\"wondrousName\");\r",
+													"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+													"});\r",
+													"\r",
+													"pm.collectionVariables.set(\"returnedWondrousGuid\", jsonData.id);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"$type\": 6,\r\n    \"rarity\": \"Rare\",\r\n    \"requiresAttunement\": true,\r\n    \"category\": \"WondrousItem\",\r\n    \"description\": \"Grants +1 to AC\",\r\n    \"weight\": 1,\r\n    \"costInGold\": 5000,\r\n    \"requiredProficiency\": null,\r\n    \"name\": \"{{wondrousName}}\",\r\n    \"isPublic\": true,\r\n    \"usedRuleset\": \"DND5E_2014\",\r\n    \"type\": \"Item\"\r\n  }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/Item/Wondrous",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"Wondrous"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Wondrous",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\" returns 204 No Content\", () => {\r",
+													"  pm.response.to.have.status(204);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/Item/{{returnedWondrousGuid}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Item",
+												"{{returnedWondrousGuid}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Create Generic Item",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var random = Math.random().toString(36).substring(2);\r",
+											"pm.environment.set(\"genericItemName\", \"Lantern, Hooded \" + random);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is json\", function () {\r",
+											"    pm.response.to.be.json;\r",
+											"});\r",
+											"\r",
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Expected name on response item\", function () {\r",
+											"    \r",
+											"    const expectedName = pm.environment.get(\"genericItemName\");\r",
+											"    pm.expect(jsonData.name).to.eql(expectedName)\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"returnedGenericItemGuid\", jsonData.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"category\": \"AdventuringGear\",\r\n    \"description\": \"Bright light in 30 ft radius\",\r\n    \"weight\": 2,\r\n    \"costInGold\": 5,\r\n    \"requiredProficiency\": null,\r\n    \"name\": \"{{genericItemName}}\",\r\n    \"isPublic\": true,\r\n    \"usedRuleset\": \"DND5E_2014\",\r\n    \"type\": \"Item\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Item/GenericItem",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Item",
+										"GenericItem"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetDetailedList",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"GET returns an array\", function () {\r",
+											"  const json = pm.response.json();\r",
+											"  pm.expect(Array.isArray(json)).to.be.true;\r",
+											"  pm.expect(json.length).to.be.greaterThan(0);\r",
+											"});\r",
+											"pm.test(\"GET items have id, name, isPublic and usedRuleset\", function () {\r",
+											"  const json = pm.response.json();\r",
+											"  if (json.length > 0) {\r",
+											"    pm.expect(json[0]).to.have.property(\"id\");\r",
+											"    pm.expect(json[0]).to.have.property(\"name\").that.is.a(\"string\");\r",
+											"    pm.expect(json[0]).to.have.property(\"isPublic\").that.is.a(\"boolean\");\r",
+											"    pm.expect(json[0]).to.have.property(\"usedRuleset\").that.is.a(\"string\");\r",
+											"    //pm.expect(json).to.have.property(\"type\", \"Item\");\r",
+											"  }\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Item",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Item"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetSingleResult - Incorrect id format",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Item/ffff",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Item",
+										"ffff"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CleanUp",
+					"item": [
+						{
+							"name": "Feat2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\" returns 204 No Content\", () => {\r",
+											"  pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/{{returnedGuid2}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"{{returnedGuid2}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Feat3",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\" returns 204 No Content\", () => {\r",
+											"  pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/{{returnedGuid3}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"{{returnedGuid3}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Feat4",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\" returns 204 No Content\", () => {\r",
+											"  pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Feat/{{returnedGuid4}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Feat",
+										"{{returnedGuid4}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "CharacterHandler",
+			"item": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "returnedGuid",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "returnedGuid2",
+			"value": ""
+		},
+		{
+			"key": "returnedGuid3",
+			"value": ""
+		},
+		{
+			"key": "returnedGuid4",
+			"value": ""
+		},
+		{
+			"key": "returnedArmorGuid",
+			"value": ""
+		},
+		{
+			"key": "returnedWeaponGuid",
+			"value": ""
+		},
+		{
+			"key": "returnedGenericItemGuid",
+			"value": ""
+		},
+		{
+			"key": "returnedCurrencyGuid",
+			"value": ""
+		},
+		{
+			"key": "returnedWondrousGuid",
+			"value": ""
+		}
+	]
+}

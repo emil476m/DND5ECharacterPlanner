@@ -27,38 +27,42 @@ public class ItemController : ControllerBase
         return Ok(responseDto);
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
+        if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
         var result = await _itemService.GetItemById(id);
         return result != null ? Ok(result.ToItemDto()) : NotFound();
     }
 
     // Delete item by id
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteItemAsync(Guid id)
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> DeleteItemAsync([FromRoute] Guid id)
     {
-        var result = await _itemService.DeleteItem(id);
-        return result ? Ok() : NotFound();
+        if (string.IsNullOrEmpty(id.ToString())) return BadRequest();
+        var deleted = await _itemService.DeleteItem(id);
+        return deleted ? NoContent() : NotFound();
     }
 
     // Create Endpoints
-
 
     [HttpPost("Armor")]
     public async Task<ActionResult<ItemModel>> CreateArmorAsync([FromBody] ArmorModel armor)
     {
         var result = await _itemService.CreateArmor(armor);
-        return Ok(result.ToItemDto());
-        ;
+        var response = result.ToItemDto();
+        return response != null ? Created("Created Item", response) : NotFound();
     }
 
     [HttpPost("Weapon")]
     public async Task<ActionResult<ItemModel>> CreateWeaponAsync([FromBody] WeaponModel weapon)
     {
         var result = await _itemService.CreateWeapon(weapon);
-        return Ok(result.ToItemDto());
+        var response = result.ToItemDto();
+        return response != null ? Created("Created Item", response) : NotFound();
     }
 
     [HttpPost("GenericItem")]
@@ -67,21 +71,24 @@ public class ItemController : ControllerBase
         //TODO: Create a create dto for all relevant endpoints
 
         var result = await _itemService.CreateGenericItem(item);
-        return Ok(result.ToItemDto());
+        var response = result.ToItemDto();
+        return response != null ? Created("Created Item", response) : NotFound();
     }
 
     [HttpPost("Currency")]
     public async Task<ActionResult<ItemModel>> CreateCurrencyAsync([FromBody] CurrencyModel currency)
     {
         var result = await _itemService.CreateCurrency(currency);
-        return Ok(result.ToItemDto());
+        var response = result.ToItemDto();
+        return response != null ? Created("Created Item", response) : NotFound();
     }
 
     [HttpPost("Wondrous")]
     public async Task<ActionResult<ItemModel>> CreateWondrousAsync([FromBody] WondrousItemModel wondrous)
     {
         var result = await _itemService.CreateWondrous(wondrous);
-        return Ok(result.ToItemDto());
+        var response = result.ToItemDto();
+        return response != null ? Created("Created Item", response) : NotFound();
     }
 
     // Update Endpoints
