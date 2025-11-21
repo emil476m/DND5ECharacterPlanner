@@ -1,10 +1,12 @@
+using Api.TransferModels.DndEntities;
+using Core.Models.Backgrounds;
 using Core.Models.Feats;
 using Core.Models.Items;
 using Core.Models.Miscellaneous;
 
-namespace Core.Models.Backgrounds;
+namespace Api.TransferModels.Background;
 
-public class BackgroundModel : DndEntityModel
+public class BackgroundCreateDto : DndEntityCreateDto
 {
     public string Description { get; set; } = string.Empty;
     
