@@ -70,7 +70,8 @@ public static class DndEntityMapper
             CreatedByUserId = entityModel.CreatedByUserId,
             CreatedAt = entityModel.CreatedAt,
             UsedRuleset = entityModel.UsedRuleset,
-            Type = entityModel.Type
+            Type = entityModel.Type,
+            Source = entityModel.Source
         };
     }
 }

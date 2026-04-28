@@ -18,7 +18,7 @@ public static class FeatMapper
             CreatedByUserId = model.CreatedByUserId,
             UsedRuleset = model.UsedRuleset,
             Type = model.Type,
-
+            Source = model.Source,
             //feat model
             Effect = model.Effect,
             EffectChoices = model.EffectChoices,
@@ -40,7 +40,7 @@ public static class FeatMapper
             CreatedByUserId = model.CreatedByUserId,
             UsedRuleset = model.UsedRuleset,
             Type = model.Type,
-
+            Source = model.Source,
             //feat model
             Effect = model.Effect,
             EffectChoices = model.EffectChoices,

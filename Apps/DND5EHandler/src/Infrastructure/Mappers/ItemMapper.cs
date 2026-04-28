@@ -18,6 +18,7 @@ public static class ItemMapper
             CreatedAt = dbModel.CreatedAt,
             UsedRuleset = dbModel.UsedRuleset,
             Type = dbModel.Type,
+            Source = dbModel.Source,
             //Item properties
             Category = dbModel.Category,
             Description = dbModel.Description,
@@ -40,6 +41,7 @@ public static class ItemMapper
             CreatedAt = dbModel.CreatedAt,
             UsedRuleset = dbModel.UsedRuleset,
             Type = dbModel.Type,
+            Source = dbModel.Source,
             //Item properties
             Category = dbModel.Category,
             Description = dbModel.Description,
@@ -68,6 +70,7 @@ public static class ItemMapper
             CreatedAt = dbModel.CreatedAt,
             UsedRuleset = dbModel.UsedRuleset,
             Type = dbModel.Type,
+            Source = dbModel.Source,
             //Item properties
             Category = dbModel.Category,
             Description = dbModel.Description,
@@ -96,6 +99,7 @@ public static class ItemMapper
             CreatedAt = dbModel.CreatedAt,
             UsedRuleset = dbModel.UsedRuleset,
             Type = dbModel.Type,
+            Source = dbModel.Source,
             //Item properties
             Category = dbModel.Category,
             Description = dbModel.Description,
@@ -121,6 +125,7 @@ public static class ItemMapper
             CreatedAt = dbModel.CreatedAt,
             UsedRuleset = dbModel.UsedRuleset,
             Type = dbModel.Type,
+            Source = dbModel.Source,
             //Item properties
             Category = dbModel.Category,
             Description = dbModel.Description,
@@ -149,6 +154,7 @@ public static class ItemMapper
             CreatedAt = dbModel.CreatedAt,
             UsedRuleset = dbModel.UsedRuleset,
             Type = dbModel.Type,
+            Source = dbModel.Source,
             //Item properties
             Category = dbModel.Category,
             Description = dbModel.Description,
