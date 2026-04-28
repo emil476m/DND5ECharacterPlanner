@@ -166,3 +166,6 @@ AutoTest.Net/
 
 # DocProject is a documentation generator add-in
 DocProject/buildhelp/
+
+# Local development plans
+plans/
